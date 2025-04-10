@@ -37,7 +37,7 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
   if (missing(id)) cli_abort("{.arg id} must be specified")
   if (!is.character(outdir)) cli_abort("{.arg outdir} must be a character")
   meta <- download_dataverse_info(id, server = server, key = key, refresh = refresh, branch = branch)
-  fs <- vapply(meta$latestVersion$files, function(m) m$dataFile$filename, "")
+  fs <- vapply(meta$files, function(m) m$dataFile$filename, "")
   which_files <- if (!is.null(files)) {
     if (is.numeric(files)) {
       files[files <= length(fs)]
@@ -69,8 +69,8 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
     }
   }
   if (length(which_files) == length(fs) || !missing(version)) {
-    zf <- paste0(outdir, gsub("\\W", "", meta$latestVersion$datasetPersistentId), ".zip")
-    if (verbose) cli_alert_info("downloading dataset: {meta$latestVersion$datasetPersistentId}")
+    zf <- paste0(outdir, gsub("\\W", "", meta$datasetPersistentId), ".zip")
+    if (verbose) cli_alert_info("downloading dataset: {meta$datasetPersistentId}")
     if (is.character(key)) {
       if (verbose) cli_alert_info("trying with key")
       tryCatch(
@@ -79,7 +79,7 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
           "-o", zf,
           paste0(
             meta$server, "api/access/dataset/:persistentId/versions/", version, "?persistentId=",
-            meta$latestVersion$datasetPersistentId
+            meta$datasetPersistentId
           )
         ), stdout = TRUE),
         error = function(e) NULL
@@ -89,7 +89,7 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
       tryCatch(
         download.file(paste0(
           meta$server, "api/access/dataset/:persistentId/versions/", version, "?persistentId=",
-          meta$latestVersion$datasetPersistentId
+          meta$datasetPersistentId
         ), zf, quiet = TRUE, mode = "wb"),
         error = function(e) NULL
       )
@@ -100,8 +100,8 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
     } else if (verbose) cli_alert_info("failed to download dataset {meta$id}; trying individual files...")
   }
   for (i in which_files) {
-    m <- meta$latestVersion$files[[i]]
-    meta$latestVersion$files[[i]]$local <- ffs[i]
+    m <- meta$files[[i]]
+    meta$files[[i]]$local <- ffs[i]
     if (!file.exists(ffs[i]) && !file.exists(ffsx[i])) {
       if (verbose) cli_alert_info("downloading file: {.file {m$label}}")
       if (is.null(key)) {

@@ -3,6 +3,7 @@ import {BaseOutput} from './index'
 import type Community from '../index'
 import type {Entity, ObjectIndex, Order, Summary, Variables} from '../../types'
 import DataHandler from '../../data_handler/index'
+import type {Api, Config} from 'datatables.net-dt'
 
 type TableVariableSpec = {name: string; title?: string; source?: 'data' | 'features'}
 type TableOrderSpec = [number, string][]
@@ -56,7 +57,7 @@ interface DataTablesMouseEvent extends MouseEvent {
 
 export class OutputDataTable extends BaseOutput {
   type: 'datatable' = 'datatable'
-  table: DataTables.Api
+  table: Api
   style: HTMLStyleElement
   clickto?: SiteInputs
   spec: DataTableSpec
@@ -283,7 +284,7 @@ export class OutputDataTable extends BaseOutput {
     const showing = this.deferred || !this.tab || this.tab.classList.contains('show')
     if (showing && 'jQuery' in window && 'DataTable' in window && 'get' in this.site.dataviews[this.view]) {
       this.spec.columns = this.header
-      this.table = $(this.e).DataTable(this.spec)
+      this.table = $(this.e).DataTable(this.spec as Config)
       this.update()
     } else {
       this.deferred = true
@@ -359,7 +360,7 @@ export class OutputDataTable extends BaseOutput {
                 } else this.state = ''
                 this.spec.order[0][0] = this.header.length - 1
                 this.spec.columns = this.header
-                this.table = $(this.e).DataTable(this.spec)
+                this.table = $(this.e).DataTable(this.spec as Config)
               }
               const n = this.header.length,
                 ns = this.parsed.summary.n
@@ -482,7 +483,10 @@ export class OutputDataTable extends BaseOutput {
               0
             )
           if (!update && this.site.spec.settings.table_autosort) {
-            this.table.order([this.parsed.time + 1, 'dsc']).draw()
+            this.table
+              .column(this.parsed.time + 1)
+              .order('dsc')
+              .draw()
           }
           if (this.site.spec.settings.table_autoscroll) {
             const w = this.e.parentElement.getBoundingClientRect().width,

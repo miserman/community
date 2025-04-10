@@ -11,8 +11,8 @@ A toolset and web framework to help manage and present data.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/uva-bi-sdad/community}
-  \item Report bugs at \url{https://github.com/uva-bi-sdad/community/issues}
+  \item \url{https://github.com/miserman/community}
+  \item Report bugs at \url{https://github.com/miserman/community/issues}
 }
 
 }

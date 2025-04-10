@@ -1,333 +1,144 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/404.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/anti-patterns.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/casestudy-arrests.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/datacommons_projects.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/developer-course.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/articles/quickstart-site.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/checks.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/checks.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/exporter.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/export_params.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/filter_check.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/formatters.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/index.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/ingesters.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/mappers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/parsers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/patterns.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/retrievers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/row_writers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/data_handler/summary.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/exporter.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/export_params.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/filter_check.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/formatters.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/index.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/ingesters.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/mappers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/package.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/parsers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/patterns.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/retrievers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/row_writers.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/defaults.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/index.js.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/palettes.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/patterns.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/summary_levels.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/tutorials.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/utils.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/site/value_types.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/summary.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/coverage/tutorials.ts.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/add_data.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/calculate_access.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/check_repository.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/check_template.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/community-package.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/datacommons_find_variables.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/datacommons_map_files.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/datacommons_map_variables.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/datacommons_refresh.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/datacommons_view.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/data_add.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/data_measure_info.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/data_reformat_sdad.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/download_census_shapes.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/download_dataverse_data.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_data.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_datacommons.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_function.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_repository.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_shiny.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_site.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/init_template.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_button.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_buttongroup.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_checkbox.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_combobox.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_dataview.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_number.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_rule.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_select.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_slider.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_switch.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_text.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/input_variable.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/measure_catchment.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_credits.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_info.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_legend.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_map.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_table.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/output_text.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_head.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_menu.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_navbar.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_panel.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_popup.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_section.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_tabgroup.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_text.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/page_tutorials.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/site_build.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/site_make_child.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/template_data.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/template_function.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/template_shiny.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/template_spec.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/template_template.html</loc>
-  </url>
-  <url>
-    <loc>https://uva-bi-sdad.github.io/community/reference/util_make_palette.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://miserman.github.io/community/404.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/anti-patterns.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/casestudy-arrests.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/datacommons_projects.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/developer-course.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/articles/quickstart-site.html</loc></url>
+<url><loc>https://miserman.github.io/community/authors.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/checks.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/checks.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/exporter.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/export_params.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/filter_check.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/formatters.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/index.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/ingesters.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/mappers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/parsers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/patterns.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/retrievers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/row_writers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/data_handler/summary.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/exporter.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/export_params.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/filter_check.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/formatters.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/index.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/ingesters.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/mappers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/package.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/parsers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/patterns.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/retrievers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/row_writers.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/common_methods.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/conditionals.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/dataview.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/defaults.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/global_view.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/index.js.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/index.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/button.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/buttongroup.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/checkbox.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/combobox.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/index.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/number.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/radio.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/select.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/switch.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/text.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/inputs/virtual.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/datatables.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/index.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/info.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/legend.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/map.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/plotly.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/table.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/outputs/text.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/page.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/palettes.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/patterns.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/static_refs.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/storage.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/subscriptions.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/summary_levels.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/time_funs.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/tutorials.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/utils.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/site/value_types.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/summary.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/coverage/tutorials.ts.html</loc></url>
+<url><loc>https://miserman.github.io/community/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/LICENSE-text.html</loc></url>
+<url><loc>https://miserman.github.io/community/LICENSE.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/add_data.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/calculate_access.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/check_repository.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/check_template.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/community-package.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/datacommons_find_variables.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/datacommons_map_files.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/datacommons_map_variables.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/datacommons_refresh.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/datacommons_view.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/data_add.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/data_measure_info.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/data_reformat_sdad.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/download_census_shapes.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/download_dataverse_data.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/index.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_data.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_datacommons.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_function.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_repository.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_shiny.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_site.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/init_template.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_button.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_buttongroup.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_checkbox.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_combobox.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_dataview.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_number.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_rule.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_select.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_slider.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_switch.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_text.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/input_variable.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/measure_catchment.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_credits.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_info.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_legend.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_map.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_plot.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_table.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/output_text.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_head.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_menu.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_navbar.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_panel.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_popup.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_section.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_tabgroup.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_text.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/page_tutorials.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/site_build.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/site_make_child.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/template_data.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/template_function.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/template_shiny.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/template_spec.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/template_template.html</loc></url>
+<url><loc>https://miserman.github.io/community/reference/util_make_palette.html</loc></url>
 </urlset>
+

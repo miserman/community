@@ -1,65 +1,65 @@
-url: https://uva-bi-sdad.github.io/community
+url: https://miserman.github.io/community
 
 navbar:
   components:
     articles:
       text: Articles
       menu:
-      - text: Examples
-      - text: Build a Data Site
-        href: articles/quickstart-site.html
-      - text: Build a Data Commons
-        href: articles/datacommons_projects.html
-      - text: Illinois Arrests
-        href: articles/casestudy-arrests.html
-      - text: Other
-      - text: Developer Course
-        href: articles/developer-course.html
-      - text: Alan Notes
-        href: articles/anti-patterns.html
-      
+        - text: Examples
+        - text: Build a Data Site
+          href: articles/quickstart-site.html
+        - text: Build a Data Commons
+          href: articles/datacommons_projects.html
+        - text: Illinois Arrests
+          href: articles/casestudy-arrests.html
+        - text: Other
+        - text: Developer Course
+          href: articles/developer-course.html
+        - text: Alan Notes
+          href: articles/anti-patterns.html
 
 template:
   bootstrap: 5
   params:
     bootswatch: flatly
+  light-switch: true
 
 authors:
   Biocomplexity Institute:
     href: https://biocomplexity.virginia.edu/institute/divisions/social-and-decision-analytics
-    
+
 reference:
-- title: Site
-  desc: Most functions are used to add components to and build a website.
-  contents:
-  - starts_with("site_")
-  - starts_with("page_")
-  - starts_with("input_")
-  - starts_with("output_")
+  - title: Site
+    desc: Most functions are used to add components to and build a website.
+    contents:
+      - starts_with("site_")
+      - starts_with("page_")
+      - starts_with("input_")
+      - starts_with("output_")
 
-- title: Data Commons
-  desc: datacommons_ function help manage sets of data repositories.
-  contents:
-  - starts_with("datacommons_")
+  - title: Data Commons
+    desc: datacommons_ function help manage sets of data repositories.
+    contents:
+      - starts_with("datacommons_")
 
-- title: Initializers
-  desc: init_ functions create project directories and/or files based on a standard.
-  contents:
-  - starts_with("init_")
-  - data_add
-  - data_measure_info
+  - title: Initializers
+    desc: init_ functions create project directories and/or files based on a standard.
+    contents:
+      - starts_with("init_")
+      - data_add
+      - data_measure_info
 
-- title: Checks
-  desc: check_ functions use some criteria to assess a resource (e.g., to validate its structure).
-  contents:
-  - starts_with("check_")
-  
-- title: Utils
-  desc: Other functions automate more specific tasks.
-  contents:
-  - data_reformat_sdad
-  - starts_with("download_")
-  - starts_with("util_")
+  - title: Checks
+    desc: check_ functions use some criteria to assess a resource (e.g., to validate its structure).
+    contents:
+      - starts_with("check_")
+
+  - title: Utils
+    desc: Other functions automate more specific tasks.
+    contents:
+      - data_reformat_sdad
+      - starts_with("download_")
+      - starts_with("util_")
 
 home:
   sidebar:
@@ -67,6 +67,4 @@ home:
     components:
       coverage:
         title: Test Coverage
-        text:
-        - '<a href="coverage/package.html" target="_blank" rel="noreferrer">R</a><br />'
-        - '<a href="coverage/index.html" target="_blank" rel="noreferrer">Javascript</a>'
+        text: '<a href="coverage/package.html" target="_blank" rel="noreferrer">R</a><br /><a href="coverage/index.html" target="_blank" rel="noreferrer">Javascript</a>'

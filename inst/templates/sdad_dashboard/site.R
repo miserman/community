@@ -116,7 +116,7 @@ page_navbar(
         "Credits",
         paste(
           "Built in [R](https://www.r-project.org) with the",
-          "[community](https://uva-bi-sdad.github.io/community) package, using these resources:"
+          "[community](https://miserman.github.io/community) package, using these resources:"
         )
       ), class = c("", "", "", "", "h5")),
       output_credits()

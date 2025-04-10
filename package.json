@@ -17,22 +17,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/uva-bi-sdad/community.git"
+    "url": "git+https://github.com/miserman/community.git"
   },
   "author": "Biocomplexity Institute",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/uva-bi-sdad/community/issues"
+    "url": "https://github.com/miserman/community/issues"
   },
-  "homepage": "https://uva-bi-sdad.github.io/community",
+  "homepage": "https://miserman.github.io/community",
   "devDependencies": {
     "@jest/globals": "latest",
     "@rollup/plugin-terser": "latest",
     "@rollup/plugin-typescript": "latest",
-    "@types/datatables.net": "latest",
     "@types/jest": "latest",
+    "@types/jquery": "latest",
     "@types/leaflet": "latest",
     "csso": "latest",
+    "datatables.net-dt": "latest",
     "jest": "latest",
     "jest-environment-jsdom": "latest",
     "rollup": "latest",

@@ -1,6 +1,6 @@
 ---
-title: "Notes against anti-patterns in Site.R"
-author: "by Alan Wang on July 22, 2022"
+title: 'Notes against anti-patterns in Site.R'
+author: 'by Alan Wang on July 22, 2022'
 
 output: rmarkdown::html_vignette
 vignette: >
@@ -19,38 +19,36 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(community)
 ```
+
 ---
 
-When I first started to utilize the ``site.R`` script, I found it helpful to understand which elements exists and how they can and cannot be used to create a website. This tutorial is aimed to give the users a slightly deeper understanding of the package by eliminating implicit knowledge. If you haven't already, I would first read the [quick-start guide](https://uva-bi-sdad.github.io/community/articles/quickstart-site.html) before continuing with this tutorial.
+When I first started to utilize the `site.R` script, I found it helpful to understand which elements exists and how they can and cannot be used to create a website. This tutorial is aimed to give the users a slightly deeper understanding of the package by eliminating implicit knowledge. If you haven't already, I would first read the [quick-start guide](https://miserman.github.io/community/articles/quickstart-site.html) before continuing with this tutorial.
 
+## Attributes:
 
-Attributes:
----
-- <span style="color:blue">__Singleton__</span>: A singleton is an element that can only occur _once_ in a site. For example, you _cannot_ create multiple navbars
+- <span style="color:blue">**Singleton**</span>: A singleton is an element that can only occur _once_ in a site. For example, you _cannot_ create multiple navbars
 
-Colors:
----
-- <span style="color:red">__Red__</span>: Causes an error
-- <span style="color:orange">__Orange__</span>: Does not cause an error, but require implicit knowledge
+## Colors:
 
-Page Elements:
----
-- <span style="color:blue">__page_head__</span>: 
+- <span style="color:red">**Red**</span>: Causes an error
+- <span style="color:orange">**Orange**</span>: Does not cause an error, but require implicit knowledge
+
+## Page Elements:
+
+- <span style="color:blue">**page_head**</span>:
   - This element seems to be replaced by the last time it is called. In other words, if you call this element twice, <span style="color:orange">only the latest call is preserved</span>
-- <span style="color:blue">__page_menu__</span>: 
+- <span style="color:blue">**page_menu**</span>:
   - When you create multiple menus, the last one ends up on the top
-  - If you make multiple ``page_menu``s, <span style="color:red">but the second one would overlap with the first one, making you unable to close the second one</span>
-- <span style="color:blue">__page_navbar__</span>: 
-  - If you call this multiple times, <span style="color:orange"> only the latest call would be the one implemented </span> 
-  - You can call the element anywhere inside ``site.R``
-- <span style="color:blue">__page_panel__ (_conditionally-singleton_) </span>:
-  - Right now, if you call a ``page_panel`` with ``position=Left`` argument and a ``page_menu`` element, in first instance of rendering, <span style="color:orange"> the panel would first push the menu to the right of it, before having it recede to overlap it</span>
+  - If you make multiple `page_menu`s, <span style="color:red">but the second one would overlap with the first one, making you unable to close the second one</span>
+- <span style="color:blue">**page_navbar**</span>:
+  - If you call this multiple times, <span style="color:orange"> only the latest call would be the one implemented </span>
+  - You can call the element anywhere inside `site.R`
+- <span style="color:blue">**page_panel** (_conditionally-singleton_) </span>:
+  - Right now, if you call a `page_panel` with `position=Left` argument and a `page_menu` element, in first instance of rendering, <span style="color:orange"> the panel would first push the menu to the right of it, before having it recede to overlap it</span>
   - This element is _singleton_ by position (i.e., you cannot create two panels in the same position without it overlapping)
-- __page_section__:
+- **page_section**:
   - You can use this element to create any number of additional sections going down
-- __page_tabgroup__:
-  - If you follow the example, you realize that the ``output_map()`` is a singleton, and <span style="color:red"> calling multiple maps, all but the first one appears</span>
-- __page_text__:
+- **page_tabgroup**:
+  - If you follow the example, you realize that the `output_map()` is a singleton, and <span style="color:red"> calling multiple maps, all but the first one appears</span>
+- **page_text**:
   - Adds html text to the site directly
-
-

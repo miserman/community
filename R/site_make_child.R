@@ -16,7 +16,7 @@
 #' @param quiet Logical; if \code{TRUE}, does not send messages.
 #' @examples
 #' \dontrun{
-#' site_make_child("uva-bi-sdad/community_example", "../community_example")
+#' site_make_child("miserman/community_example", "../community_example")
 #' }
 #' @return Invisible path to the child directory.
 #' @export

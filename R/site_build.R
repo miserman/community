@@ -380,13 +380,13 @@ site_build <- function(dir, file = "site.R", name = "index.html", variables = NU
   parts$dependencies <- c(
     if (stable) {
       list(
-        base_style = list(type = "stylesheet", src = "https://uva-bi-sdad.github.io/community/dist/css/community.v2.min.css"),
-        base = list(type = "script", loading = "", src = "https://uva-bi-sdad.github.io/community/dist/js/community.v2.min.js")
+        base_style = list(type = "stylesheet", src = "https://miserman.github.io/community/dist/css/community.v2.min.css"),
+        base = list(type = "script", loading = "", src = "https://miserman.github.io/community/dist/js/community.v2.min.js")
       )
     } else if (version == "dev") {
       list(
-        base_style = list(type = "stylesheet", src = "https://uva-bi-sdad.github.io/community/dist/css/community.min.css"),
-        base = list(type = "script", loading = "", src = "https://uva-bi-sdad.github.io/community/dist/js/community.min.js")
+        base_style = list(type = "stylesheet", src = "https://miserman.github.io/community/dist/css/community.min.css"),
+        base = list(type = "script", loading = "", src = "https://miserman.github.io/community/dist/js/community.min.js")
       )
     } else {
       if (version == "local") version <- "http://localhost:8000"
@@ -440,13 +440,13 @@ site_build <- function(dir, file = "site.R", name = "index.html", variables = NU
         custom = list(type = "script", src = "script.js"),
         bootstrap_style = list(
           type = "stylesheet",
-          src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css",
-          hash = "sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+          src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css",
+          hash = "sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
         ),
         bootstrap = list(
           type = "script",
-          src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js",
-          hash = "sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+          src = "https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js",
+          hash = "sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         )
       )
     )
@@ -458,7 +458,7 @@ site_build <- function(dir, file = "site.R", name = "index.html", variables = NU
   parts$credits$bootstrap <- list(
     name = "Bootstrap",
     url = "https://getbootstrap.com",
-    version = "5.3.2"
+    version = "5.3.5"
   )
   parts$credits$colorbrewer <- list(
     name = "ColorBrewer",

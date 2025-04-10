@@ -110,6 +110,7 @@ make_full_name <- function(filename, variable) {
 
 replace_equations <- function(info) {
   lapply(info, function(e) {
+    if (!is.list(e)) e <- list(default = e)
     descriptions <- grep("description", names(e), fixed = TRUE)
     if (length(descriptions)) {
       for (d in descriptions) {

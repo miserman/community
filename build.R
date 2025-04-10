@@ -16,12 +16,12 @@ if (FALSE) system2("npm", "run build-stable")
 cache_scripts <- list(
   data_handler = list(
     dev = list(
-      source = "https://uva-bi-sdad.github.io/community/dist/js/data_handler.min.js",
+      source = "https://miserman.github.io/community/dist/js/data_handler.min.js",
       location = "docs",
       md5 = tools::md5sum("docs/dist/js/data_handler.min.js")[[1]]
     ),
     stable = list(
-      source = "https://uva-bi-sdad.github.io/community/dist/js/data_handler.v2.min.js",
+      source = "https://miserman.github.io/community/dist/js/data_handler.v2.min.js",
       location = "docs",
       md5 = tools::md5sum("docs/dist/js/data_handler.v2.min.js")[[1]]
     )

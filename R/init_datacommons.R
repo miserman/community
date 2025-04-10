@@ -85,7 +85,7 @@ init_datacommons <- function(dir, name = "Data Commons", repos = NULL, default_u
       "",
       "You can clone this repository and run these commands to establish and work from local data:",
       "```R",
-      '# remotes::install_github("uva-bi-sdad/community")',
+      '# remotes::install_github("miserman/community")',
       "library(community)",
       "",
       "# clone and/or pull repositories and distributions:",
@@ -146,8 +146,8 @@ init_datacommons <- function(dir, name = "Data Commons", repos = NULL, default_u
         )
       } else {
         list(
-          list(type = "stylesheet", src = "https://uva-bi-sdad.github.io/community/dist/css/datacommons.min.css"),
-          list(type = "script", src = "https://uva-bi-sdad.github.io/community/dist/js/datacommons.min.js")
+          list(type = "stylesheet", src = "https://miserman.github.io/community/dist/css/datacommons.min.css"),
+          list(type = "script", src = "https://miserman.github.io/community/dist/js/datacommons.min.js")
         )
       },
       list(

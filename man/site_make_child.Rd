@@ -35,6 +35,6 @@ based on the same data.
 }
 \examples{
 \dontrun{
-site_make_child("uva-bi-sdad/community_example", "../community_example")
+site_make_child("miserman/community_example", "../community_example")
 }
 }

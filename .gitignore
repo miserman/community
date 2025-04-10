@@ -6,7 +6,6 @@
 *.Rproj
 inst/doc
 /coverage/
-package-lock.json
 node_modules
 .nyc_output
 .netlify

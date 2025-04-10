@@ -6,7 +6,7 @@ import {minify} from 'csso'
 
 const version = process.env.community_dist_version ? '.' + process.env.community_dist_version : ''
 
-config[0].plugins = config[1].plugins = [typescript(), terser()]
+config[0].plugins = config[1].plugins = [typescript({compilerOptions: {outDir: 'docs/dist/js'}}), terser()]
 config[0].output.file = 'docs/dist/js/community' + version + '.min.js'
 config[1].output.file = 'docs/dist/js/data_handler' + version + '.min.js'
 

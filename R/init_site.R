@@ -41,7 +41,7 @@ init_site <- function(dir, title = "app", template = "mtcars", with_data = FALSE
       "<template: Describe the site>",
       "\n## Run",
       "```R",
-      '# remotes::install_github("uva-bi-sdad/community")',
+      '# remotes::install_github("miserman/community")',
       "library(community)",
       "\n# from the site directory:",
       'site_build(".")',

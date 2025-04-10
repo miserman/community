@@ -122,6 +122,5 @@ download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FAL
       )))
     }
   }
-  if (is.null(res$latestVersion)) res$latestVersion <- res
   res
 }

@@ -1,11 +1,11 @@
 ---
-title: "Developer Course"
+title: 'Developer Course'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Developer Course}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -38,6 +38,7 @@ Answer: `NA`; the year 2015 does not exist here, but we can still virtually acce
 ```
 
 Answer: MAE = `r mean(abs(datasets$d1$value[2:3] - datasets$d2$value[1:2]))`; to calculate this, we need to temporally align vectors (which could be done virtually):
+
 ```{r}
 (data.frame(
   year = c(2012, 2013, 2014, 2015),
@@ -46,7 +47,6 @@ Answer: MAE = `r mean(abs(datasets$d1$value[2:3] - datasets$d2$value[1:2]))`; to
 ))
 ```
 
-
 ## ID Mapping
 
 1. If ID `123` is selected, which rows should be included?
@@ -54,6 +54,7 @@ Answer: MAE = `r mean(abs(datasets$d1$value[2:3] - datasets$d2$value[1:2]))`; to
 ```{r}
 data.frame(ID = c(1234, 1243, 1235, 1245))
 ```
+
 Answer: rows 1 (1234) and 3 (1235); with no additional information, we can look for initial substring matches to map one set of IDs to another.
 
 2. Calculate all possible aggregates of the `lower` dataset values to the `higher` dataset.
@@ -76,6 +77,7 @@ Answer: rows 1 (1234) and 3 (1235); with no additional information, we can look 
 ```
 
 Aggregated `higher`:
+
 ```{r}
 datasets$higher[, 3:4] <- do.call(rbind, lapply(
   split(datasets$lower[, -2], datasets$lower$time), function(d) {
@@ -102,7 +104,7 @@ Edit the description of the `dir` argument of the `site_build` function.
 
 2. How would you get that change to appear in the local R help (`?site_build`)?
 
-3. How would you get that change to appear on the documentation site ([site_build.html](https://uva-bi-sdad.github.io/community/reference/site_build.html))?
+3. How would you get that change to appear on the documentation site ([site_build.html](https://miserman.github.io/community/reference/site_build.html))?
 
 ## Debugging
 
@@ -115,6 +117,7 @@ util_make_palette(rep(c("red", "green", "blue"), each = 10), polynomial = TRUE)
 ```
 
 Expected result:
+
 ```{r}
 c(red = 102, green = 51, blue = 102)
 ```
@@ -136,11 +139,12 @@ Write a test to cover the first uncovered line of the `datacommons_refresh` func
 ## Editing Source
 
 - Add a line of code that will log to the console whenever a dataset is loaded.
+
   1. How would you see if it works?
   2. How would you push that change out to a live site?
 
 - There is functionality to display information about a variable when its name is clicked on.
-Change that display to show a piece of information that isn't currently being shown.
+  Change that display to show a piece of information that isn't currently being shown.
   1. How would you see what information is available?
 
 ## Testing

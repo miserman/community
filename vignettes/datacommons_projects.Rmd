@@ -1,11 +1,11 @@
 ---
-title: "Datacommons Projects"
+title: 'Datacommons Projects'
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Datacommons Projects}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -19,14 +19,14 @@ knitr::opts_chunk$set(
 A data commons project is a means of handing data that is distributed across multiple repositories.
 This article covers components of these projects, and describes how to build and maintain them.
 
-See the [Community Wiki](https://github.com/uva-bi-sdad/community/wiki/Data-Commons) for more technical detail.
+See the [Community Wiki](https://github.com/miserman/community/wiki/Data-Commons) for more technical detail.
 
 The [Social Data Commons](https://github.com/uva-bi-sdad/social_data_commons) project is a working example, where its [build.R](https://github.com/uva-bi-sdad/social_data_commons/blob/main/build.R)
 script lists the steps to build/update it.
 
 # Starting a Project
 
-The [init_datacommons](https://uva-bi-sdad.github.io/community/reference/init_datacommons.html) function
+The [init_datacommons](https://miserman.github.io/community/reference/init_datacommons.html) function
 can be used to start a data commons project.
 
 ```{r, results="hide"}
@@ -37,13 +37,13 @@ init_datacommons(dir)
 ```
 
 `init_datacommons` also builds a monitor site, so you can rerun it after updating a project for an
-updated monitor site (like the [Social Data Commons Monitor](https://uva-bi-sdad.github.io/social_data_commons)).
+updated monitor site (like the [Social Data Commons Monitor](https://miserman.github.io/social_data_commons)).
 
 After initialization, creating or updating a data commons project involves 3 primary steps:
 
-1. Specify repositories, and clone/pull them in with [datacommons_refresh](https://uva-bi-sdad.github.io/community/reference/datacommons_refresh.html).
-2. Index those repositories with [datacommons_map_files](https://uva-bi-sdad.github.io/community/reference/datacommons_map_files.html).
-3. Specify a view, and run it with [datacommons_view](https://uva-bi-sdad.github.io/community/reference/datacommons_view.html).
+1. Specify repositories, and clone/pull them in with [datacommons_refresh](https://miserman.github.io/community/reference/datacommons_refresh.html).
+2. Index those repositories with [datacommons_map_files](https://miserman.github.io/community/reference/datacommons_map_files.html).
+3. Specify a view, and run it with [datacommons_view](https://miserman.github.io/community/reference/datacommons_view.html).
 
 ## Repositories
 
@@ -54,9 +54,10 @@ You can specify these repositories through `init_datacommons`, or add them to ei
 `commons.json` or `scripts/repos.txt` list.
 
 The listed repositories are then kept in the created `repos` subdirectory, as managed by the
-[datacommons_refresh](https://uva-bi-sdad.github.io/community/reference/datacommons_refresh.html) function.
+[datacommons_refresh](https://miserman.github.io/community/reference/datacommons_refresh.html) function.
 
 For this example, we can add a single repository:
+
 ```{r, results="hide"}
 init_datacommons(dir, repos = "uva-bi-sdad/sdc.education")
 datacommons_refresh(dir, verbose = FALSE)
@@ -65,17 +66,18 @@ datacommons_refresh(dir, verbose = FALSE)
 ## Files
 
 The most basic requirement of a data repository is that it contain a data file in a tall format, as
-initially handled by [data_reformat_sdad](https://uva-bi-sdad.github.io/community/reference/data_reformat_sdad.html) --
+initially handled by [data_reformat_sdad](https://miserman.github.io/community/reference/data_reformat_sdad.html) --
 these should at least have columns containing IDs (default is `geoid`) and values (default is `value`).
 
-The [datacommons_map_files](https://uva-bi-sdad.github.io/community/reference/datacommons_map_files.html)
+The [datacommons_map_files](https://miserman.github.io/community/reference/datacommons_map_files.html)
 function searches for files in each repository to make an index, which is used to create the views.
 
-`datacommons_map_files` also looks for measure info files (such as those created by [data_measure_info](https://uva-bi-sdad.github.io/community/reference/data_measure_info.html)),
+`datacommons_map_files` also looks for measure info files (such as those created by [data_measure_info](https://miserman.github.io/community/reference/data_measure_info.html)),
 which are collected and saved to `cache/measure_info.json` for use by the monitor site.
 
-Once files are indexed, you can use the [datacommons_find_variables](https://uva-bi-sdad.github.io/community/reference/datacommons_find_variables.html)
+Once files are indexed, you can use the [datacommons_find_variables](https://miserman.github.io/community/reference/datacommons_find_variables.html)
 function to search for variables within them:
+
 ```{r}
 datacommons_find_variables("2year", dir)[[1]][, c(1, 6)]
 ```
@@ -87,7 +89,7 @@ projects is to build unified datasets from these repositories. This is done with
 
 Views are essentially lists of variables and IDs, which form a subset of the broader data commons.
 
-Views can be specified and run with the [datacommons_view](https://uva-bi-sdad.github.io/community/reference/datacommons_view.html)
+Views can be specified and run with the [datacommons_view](https://miserman.github.io/community/reference/datacommons_view.html)
 function.
 
 The product of a view is a set of unified data files (containing the requested variables and IDs, if found),
@@ -112,6 +114,6 @@ read.csv(paste0(output, "/dataset.csv.xz"))
 ```
 
 Usually the output would be a data site project, with a build script that documents
-the new datasets and rebuilds the site (such as [community_example/build.R](https://github.com/uva-bi-sdad/community_example/blob/main/build.R)).
+the new datasets and rebuilds the site (such as [community_example/build.R](https://github.com/miserman/community_example/blob/main/build.R)).
 Such a script can be set as the view's `run_after`, so after the datasets get rebuilt,
 the site is also rebuilt.

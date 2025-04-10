@@ -3,7 +3,9 @@
     "outDir": "dev",
     "target": "es6",
     "noImplicitAny": true,
-    "noImplicitThis": true
+    "noImplicitThis": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "include": ["js/site/**/*", "./js/data_handler/**/*", "js/types.ts"]
 }

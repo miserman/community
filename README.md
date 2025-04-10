@@ -2,7 +2,7 @@
 
 An R package to build static data exploration dashboards (data sites).
 
-See the [wiki](https://github.com/uva-bi-sdad/community/wiki) for more about how the package and data
+See the [wiki](https://github.com/miserman/community/wiki) for more about how the package and data
 sites work.
 
 ## Installation
@@ -11,7 +11,7 @@ Download R from [r-project.org](https://www.r-project.org/), then install the pa
 
 ```R
 # install.packages('remotes')
-remotes::install_github('uva-bi-sdad/community')
+remotes::install_github('miserman/community')
 ```
 
 And load the package:
@@ -65,7 +65,7 @@ then rebuild the site and reload the page to see changes:
 site_build("../example_site", serve = TRUE)
 ```
 
-See the [Build a Data Site](https://uva-bi-sdad.github.io/community/articles/quickstart-site.html) article for more.
+See the [Build a Data Site](https://miserman.github.io/community/articles/quickstart-site.html) article for more.
 
 ## JavaScript Development
 

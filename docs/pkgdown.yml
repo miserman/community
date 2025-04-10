@@ -1,5 +1,5 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.2'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   anti-patterns: anti-patterns.html
@@ -7,8 +7,7 @@ articles:
   datacommons_projects: datacommons_projects.html
   developer-course: developer-course.html
   quickstart-site: quickstart-site.html
-last_built: 2023-09-30T21:56Z
+last_built: 2025-04-10T17:56Z
 urls:
-  reference: https://uva-bi-sdad.github.io/community/reference
-  article: https://uva-bi-sdad.github.io/community/articles
-
+  reference: https://miserman.github.io/community/reference
+  article: https://miserman.github.io/community/articles
