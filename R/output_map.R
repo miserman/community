@@ -55,7 +55,7 @@ output_map <- function(shapes = NULL, overlays = NULL, color = NULL, color_time 
     caller$dependencies$leaflet_style <- list(
       type = "stylesheet",
       src = "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css",
-      hash = "sha384-EdLG5Q0/L1OytQXhWSU1bWVqvLMxlmdSRaA09iy8FGYjlpP7vnB3MueQ6ZloG9oF"
+      hash = "sha384-b8ANgTJvdlAnWM5YGMpKn7Kodm+1k7NYNG9zdjTCcZcKatzYHwZ0RLdWarbJJVzU"
     )
     caller$dependencies$leaflet <- list(
       type = "script",

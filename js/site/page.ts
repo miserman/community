@@ -68,7 +68,7 @@ function make_variable_reference(c: Reference) {
   e.innerText = s + ' (' + c.year + '). ' + c.title + '.'
   if (c.journal) {
     e.appendChild(span)
-    span.innerText = c.journal + (c.volume ? ', ' + c.volume : '')
+    span.innerText = ' ' + c.journal + (c.volume ? ', ' + c.volume : '')
     span.style.fontStyle = 'italic'
     e.appendChild((span = document.createElement('span')))
     span.innerText = (c.page ? ', ' + c.page : '') + '.'
@@ -239,7 +239,6 @@ export class Page {
     this.wrap = document.getElementById('site_wrap') || document.createElement('div')
     const navbar = document.querySelector('.navbar') as HTMLElement
     if (navbar) {
-      this.navbar = navbar.getBoundingClientRect()
       navbar.querySelectorAll('button').forEach(b => {
         const panel = document.querySelector(b.getAttribute('data-bs-target'))
         if (panel && 'false' === panel.getAttribute('data-bs-backdrop')) {
@@ -284,9 +283,8 @@ export class Page {
       if (site.url_options.hide_panels && this.panels.length) {
         this.panels.forEach(p => p.classList.add('hidden'))
       }
-    } else {
-      this.navbar = {height: 0}
     }
+    this.navbar = {height: 0}
     this.content = document.querySelector('.content') || document.createElement('div')
     this.panels = document.querySelectorAll('.panel')
     this.init_panel = this.init_panel.bind(this)
@@ -301,7 +299,6 @@ export class Page {
     document.body.appendChild(this.overlay)
     document.body.className =
       this.site.storage.get('theme_dark') || this.site.spec.settings.theme_dark ? 'dark-theme' : 'light-theme'
-    this.content_bounds.top = this.navbar.height
     this.init_variable_info()
     this.init_filter()
     document.querySelectorAll('[data-autotype=credits]').forEach(this.render_credits)
@@ -321,6 +318,9 @@ export class Page {
       this.content.style.top =
         (this.top_menu ? this.top_menu.e.getBoundingClientRect().height : this.navbar.height) + 'px'
     }
+    const navbar = document.querySelector('.navbar') as HTMLElement
+    if (navbar) this.navbar = navbar.getBoundingClientRect()
+    this.content_bounds.top = this.navbar.height
     Object.keys(this.site.data.loaded)
       .reverse()
       .forEach(d => {

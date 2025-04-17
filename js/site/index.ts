@@ -31,7 +31,7 @@ import {OutputLegend} from './outputs/legend'
 import {OutputText} from './outputs/text'
 
 type Queue = {
-  timeout: NodeJS.Timer | number
+  timeout: NodeJS.Timeout | number
   elements: Map<string, boolean>
 }
 

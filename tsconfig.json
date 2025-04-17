@@ -4,8 +4,7 @@
     "target": "es6",
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "bundler"
   },
   "include": ["js/site/**/*", "./js/data_handler/**/*", "js/types.ts"]
 }

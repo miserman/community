@@ -36,8 +36,8 @@ export class TutorialManager {
   header = document.createElement('p')
   dialog = document.createElement('p')
   timer = document.createElement('div')
-  running_timer: number | NodeJS.Timer
-  focuser: number | NodeJS.Timer
+  running_timer: number | NodeJS.Timeout
+  focuser: number | NodeJS.Timeout
   progress = document.createElement('div')
   continue = document.createElement('button')
   in_progress = ''

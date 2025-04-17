@@ -39,7 +39,7 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
   if (is.null(id)) id <- paste0("table", caller$uid)
   defaults <- list(
     paging = TRUE, scrollY = 500, scrollX = 500, scrollCollapse = TRUE,
-    scroller = TRUE, deferRender = TRUE
+    scroller = TRUE, deferRender = TRUE, fixedColumns = TRUE, fixedHeader = TRUE
   )
   if (!is.null(options$height)) {
     options$scrollY <- options$height
@@ -108,13 +108,13 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
       )
       caller$dependencies$datatables_style <- list(
         type = "stylesheet",
-        src = "https://cdn.datatables.net/v/dt/dt-2.2.2/b-3.2.2/b-html5-3.2.2/sc-2.4.3/datatables.min.css",
-        hash = "sha384-2Tg4N0NtIxIltJpvmVtiBiLc93avSPJVr4spCZtog5nnqobmiT2/mj7UFFfscMEs"
+        src = "https://cdn.datatables.net/v/dt/dt-2.2.2/b-3.2.2/b-html5-3.2.2/fc-5.0.4/fh-4.0.1/sc-2.4.3/datatables.min.css",
+        hash = "sha384-qOKJwbsCzk6PnFc+V/zaBZOoXDHoZ/dB0Hn09YPxZsHGTAN8cl6D0hARDTib5Yr/"
       )
       caller$dependencies$datatables <- list(
         type = "script",
-        src = "https://cdn.datatables.net/v/dt/dt-2.2.2/b-3.2.2/b-html5-3.2.2/sc-2.4.3/datatables.min.js",
-        hash = "sha384-mkTp+BRbBEYfimTZNE8ScMphDz479QMa9X6UCCslX269Ucx0uAK+MJv7k/EeNNY8",
+        src = "https://cdn.datatables.net/v/dt/dt-2.2.2/b-3.2.2/b-html5-3.2.2/fc-5.0.4/fh-4.0.1/sc-2.4.3/datatables.min.js",
+        hash = "sha384-S7iVdep2ySxWDHxb4VCStvzYwG1eXVWOVAsXdYJejn+dHAYKFbiL0h1KyRku12NW",
         loading = "defer"
       )
       caller$credits$datatables <- list(

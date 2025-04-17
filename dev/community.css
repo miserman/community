@@ -341,7 +341,7 @@ input.combobox-input {
   position: absolute;
   width: 100%;
   z-index: 100;
-  min-height: 55px;
+  height: 55px;
   background-color: var(--highlight);
   color: var(--highlight-text);
 }
@@ -674,9 +674,7 @@ div.has-note span::before,
 }
 .offcanvas-body {
   overflow-x: hidden;
-  position: absolute;
-  top: 62px;
-  width: 100%;
+  margin-bottom: 3em;
 }
 .offcanvas-footer {
   position: absolute;
@@ -1253,17 +1251,13 @@ input[type='range']::-ms-thumb {
   left: 0;
   z-index: 2;
 }
-.dataTables_wrapper td:first-child,
-table.dataTable thead > tr > th:first-child,
-.table-wrapper td:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 1;
-}
 .dataTables_wrapper th:first-child,
 .dataTables_wrapper td:first-child,
 .table-wrapper th:first-child,
-.table-wrapper td:first-child {
+.table-wrapper td:first-child,
+table.dataTable thead tr > .dtfc-fixed-start,
+table.dataTable tbody tr > .dtfc-fixed-start,
+div.dt-scroll div.dtfc-top-blocker {
   text-align: left;
   background-color: var(--background);
 }

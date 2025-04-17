@@ -11,6 +11,7 @@ A toolset and web framework to help manage and present data.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://miserman.github.io/community}
   \item \url{https://github.com/miserman/community}
   \item Report bugs at \url{https://github.com/miserman/community/issues}
 }
