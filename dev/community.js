@@ -3868,14 +3868,17 @@
             if (!Array.isArray(this.source))
                 this.source = [];
             if (!Array.isArray(v)) {
-                if (this.settings.strict && 'string' === typeof v && !(v in this.values) && this.site.patterns.number.test(v))
+                const inValues = v in this.values;
+                if (inValues)
+                    v += '';
+                if (this.settings.strict && !inValues && this.site.patterns.number.test('' + v))
                     v = +v;
                 if ('number' !== this.value_type && 'number' === typeof v && this.options[v]) {
                     v = this.options[v].dataset.value;
                 }
                 if ('string' === typeof v && v in this.display)
                     v = this.options[this.display[v]].dataset.value;
-                if (this.settings.strict && !(v in this.values))
+                if (this.settings.strict && !inValues)
                     v = this.default;
                 i = this.source.indexOf(v);
                 if (-1 === i) {
@@ -3890,7 +3893,7 @@
                         else
                             this.source[0] = v;
                     }
-                    if (v in this.values) {
+                    if (inValues) {
                         if (!this.settings.multi) {
                             const selected = this.listbox.querySelector('.selected');
                             if (selected) {
@@ -3904,7 +3907,7 @@
                 else if (toggle) {
                     update = true;
                     this.source.splice(i, 1);
-                    if (v in this.values) {
+                    if (inValues) {
                         const selection = this.options[this.values[v]];
                         selection.classList.remove('selected');
                         selection.setAttribute('aria-selected', 'false');
@@ -4523,7 +4526,8 @@
                     this.panels.forEach(p => p.classList.add('hidden'));
                 }
             }
-            this.navbar = { height: 0 };
+            this.navbar = { height: navbar ? 55 : 0 };
+            this.content_bounds.top = this.navbar.height;
             this.content = document.querySelector('.content') || document.createElement('div');
             this.panels = document.querySelectorAll('.panel');
             this.init_panel = this.init_panel.bind(this);
@@ -4558,10 +4562,6 @@
                 this.content.style.top =
                     (this.top_menu ? this.top_menu.e.getBoundingClientRect().height : this.navbar.height) + 'px';
             }
-            const navbar = document.querySelector('.navbar');
-            if (navbar)
-                this.navbar = navbar.getBoundingClientRect();
-            this.content_bounds.top = this.navbar.height;
             Object.keys(this.site.data.loaded)
                 .reverse()
                 .forEach(d => {
@@ -8594,7 +8594,7 @@
                 onload: function () {
                     if (this.data.inited)
                         clearTimeout(this.data.inited.load_screen);
-                    setTimeout(this.drop_load_screen.bind(this), 600);
+                    this.data.inited.load_screen = setTimeout(this.drop_load_screen.bind(this), 600);
                     delete this.data.onload;
                 }.bind(this),
                 data_load: function () {
@@ -8873,7 +8873,7 @@
                 if (!this.spec.settings.hide_url_parameters) {
                     window.history.replaceState(Date.now(), '', k);
                 }
-                setTimeout(this.page.resize, 50);
+                requestAnimationFrame(() => this.page.resize());
             }
         }
         refresh_conditions(id) {

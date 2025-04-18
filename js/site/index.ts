@@ -299,7 +299,7 @@ export default class Community {
       init: this.init,
       onload: function (this: Community) {
         if (this.data.inited) clearTimeout(this.data.inited.load_screen as NodeJS.Timeout)
-        setTimeout(this.drop_load_screen.bind(this), 600)
+        this.data.inited.load_screen = setTimeout(this.drop_load_screen.bind(this), 600)
         delete this.data.onload
       }.bind(this),
       data_load: function (this: Community) {
@@ -552,7 +552,7 @@ export default class Community {
       if (!this.spec.settings.hide_url_parameters) {
         window.history.replaceState(Date.now(), '', k)
       }
-      setTimeout(this.page.resize, 50)
+      requestAnimationFrame(() => this.page.resize())
     }
   }
   refresh_conditions(id: string) {

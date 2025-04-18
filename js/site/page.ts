@@ -284,7 +284,8 @@ export class Page {
         this.panels.forEach(p => p.classList.add('hidden'))
       }
     }
-    this.navbar = {height: 0}
+    this.navbar = {height: navbar ? 55 : 0}
+    this.content_bounds.top = this.navbar.height
     this.content = document.querySelector('.content') || document.createElement('div')
     this.panels = document.querySelectorAll('.panel')
     this.init_panel = this.init_panel.bind(this)
@@ -318,9 +319,6 @@ export class Page {
       this.content.style.top =
         (this.top_menu ? this.top_menu.e.getBoundingClientRect().height : this.navbar.height) + 'px'
     }
-    const navbar = document.querySelector('.navbar') as HTMLElement
-    if (navbar) this.navbar = navbar.getBoundingClientRect()
-    this.content_bounds.top = this.navbar.height
     Object.keys(this.site.data.loaded)
       .reverse()
       .forEach(d => {

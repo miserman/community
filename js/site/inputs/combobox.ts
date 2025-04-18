@@ -486,13 +486,14 @@ export class InputCombobox extends BaseInput {
     }
     if (!Array.isArray(this.source)) this.source = []
     if (!Array.isArray(v)) {
-      if (this.settings.strict && 'string' === typeof v && !(v in this.values) && this.site.patterns.number.test(v))
-        v = +v
+      const inValues = v in this.values
+      if (inValues) v += ''
+      if (this.settings.strict && !inValues && this.site.patterns.number.test('' + v)) v = +v
       if ('number' !== this.value_type && 'number' === typeof v && this.options[v]) {
         v = this.options[v].dataset.value
       }
       if ('string' === typeof v && v in this.display) v = this.options[this.display[v]].dataset.value
-      if (this.settings.strict && !(v in this.values)) v = this.default
+      if (this.settings.strict && !inValues) v = this.default
       i = this.source.indexOf(v)
       if (-1 === i) {
         update = true
@@ -503,7 +504,7 @@ export class InputCombobox extends BaseInput {
             this.source.push(v)
           } else this.source[0] = v
         }
-        if (v in this.values) {
+        if (inValues) {
           if (!this.settings.multi) {
             const selected = this.listbox.querySelector('.selected')
             if (selected) {
@@ -516,7 +517,7 @@ export class InputCombobox extends BaseInput {
       } else if (toggle) {
         update = true
         this.source.splice(i, 1)
-        if (v in this.values) {
+        if (inValues) {
           const selection = this.options[this.values[v]]
           selection.classList.remove('selected')
           selection.setAttribute('aria-selected', 'false')
