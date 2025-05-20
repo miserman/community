@@ -26,10 +26,20 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_panel <- function(title = "Side Panel", ..., foot = NULL, position = "left", wraps = NA, sizes = NA,
-                       breakpoints = NA, conditions = "", id = NULL) {
+page_panel <- function(
+  title = "Side Panel",
+  ...,
+  foot = NULL,
+  position = "left",
+  wraps = NA,
+  sizes = NA,
+  breakpoints = NA,
+  conditions = "",
+  id = NULL
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   parts$uid <- caller$uid
@@ -45,40 +55,58 @@ page_panel <- function(title = "Side Panel", ..., foot = NULL, position = "left"
   title <- substitute(title)
   r <- c(
     paste0('<div class="card panel panel-', position, '" id="', pid, '">'),
-    paste0(c('<div class="card-header">', eval(title, parts, caller), "</div>"), collapse = ""),
+    paste0(
+      c('<div class="card-header">', eval(title, parts, caller), "</div>"),
+      collapse = ""
+    ),
     '<div class="card-body">',
-    unlist(lapply(seq_len(n), function(i) {
-      wrap <- !is.na(wraps[i]) || conditions[i] != ""
-      c(
-        if (wrap) {
-          paste(c(
-            '<div class="', if (is.na(wraps[i])) "" else wraps[i],
-            if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
-            if (!is.na(sizes[i])) c("-", sizes[i]),
-            '"', if (conditions[i] != "") c(' id="', ids[i], '"'), ">"
-          ), collapse = "")
-        },
-        eval(elements[[i]], parts, caller),
-        if (wrap) "</div>"
-      )
-    }), use.names = FALSE),
+    unlist(
+      lapply(seq_len(n), function(i) {
+        wrap <- !is.na(wraps[i]) || conditions[i] != ""
+        c(
+          if (wrap) {
+            paste(
+              c(
+                '<div class="',
+                if (is.na(wraps[i])) "" else wraps[i],
+                if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
+                if (!is.na(sizes[i])) c("-", sizes[i]),
+                '"',
+                if (conditions[i] != "") c(' id="', ids[i], '"'),
+                ">"
+              ),
+              collapse = ""
+            )
+          },
+          eval(elements[[i]], parts, caller),
+          if (wrap) "</div>"
+        )
+      }),
+      use.names = FALSE
+    ),
     "</div>",
     if (length(footer)) {
       c(
         '<div class="card-footer">',
-        unlist(lapply(if (is.list(footer)) footer else list(footer), eval, parts), use.names = FALSE),
+        unlist(
+          lapply(if (is.list(footer)) footer else list(footer), eval, parts),
+          use.names = FALSE
+        ),
         "</div>"
       )
     },
     paste0(
-      '<button type="button" title="toggle panel" aria-controls="', pid,
+      '<button type="button" title="toggle panel" aria-controls="',
+      pid,
       '" aria-expanded="true" class="btn panel-toggle">&Verbar;</button>'
     ),
     "</div>"
   )
   if (building) {
     caller$body <- c(caller$body, r)
-    for (n in names(parts)) if (n != "content" && n != "uid") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content" && n != "uid")
+        caller[[n]] <- c(caller[[n]], parts[[n]])
     process_conditions(conditions, ids, caller)
     caller$uid <- parts$uid + 1
   }

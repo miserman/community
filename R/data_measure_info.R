@@ -52,6 +52,7 @@
 #'     }
 #'   \item \strong{\code{unit}}: Prefix or suffix associated with the measure's type, such as \code{\%} for \code{percent},
 #'     or \code{Mbps} for \code{rate}.
+#'   \item \strong{\code{time_resolution}}: Temporal resolution of the variable, such as \code{year} or \code{week},
 #'   \item \strong{\code{sources}}: A list or list of list containing source information, including any of these entries:
 #'     \itemize{
 #'       \item \code{name}: Name of the source (such as an organization name).
@@ -164,16 +165,31 @@
 #' @return An invisible list containing measurement metadata (the rendered version if made).
 #' @export
 
-data_measure_info <- function(path, ..., info = list(), references = list(), strict = FALSE, include_empty = TRUE,
-                              overwrite_entry = FALSE, render = NULL, overwrite = FALSE, write = TRUE, verbose = TRUE,
-                              open_after = interactive()) {
+data_measure_info <- function(
+  path,
+  ...,
+  info = list(),
+  references = list(),
+  strict = FALSE,
+  include_empty = TRUE,
+  overwrite_entry = FALSE,
+  render = NULL,
+  overwrite = FALSE,
+  write = TRUE,
+  verbose = TRUE,
+  open_after = interactive()
+) {
   if (write) {
-    if (missing(path) || !is.character(path)) cli_abort("enter a path to the measure_info.json file as {.arg path}")
+    if (missing(path) || !is.character(path)) {
+      cli_abort("enter a path to the measure_info.json file as {.arg path}")
+    }
     dir.create(dirname(path), FALSE, TRUE)
   }
   built <- list()
   if (!overwrite && is.character(path) && file.exists(path)) {
-    if (verbose) cli_bullets(c(i = "updating existing file: {.path {basename(path)}}"))
+    if (verbose) {
+      cli_bullets(c(i = "updating existing file: {.path {basename(path)}}"))
+    }
     built <- jsonlite::read_json(path)
     if (all(c("measure", "measure_type") %in% names(built))) {
       built <- list(built)
@@ -198,13 +214,16 @@ data_measure_info <- function(path, ..., info = list(), references = list(), str
     statement = "",
     measure_type = "",
     unit = "",
+    time_resolution = "",
     sources = list(),
     citations = list(),
     layer = list()
   )
   if (!is.list(info)) info <- sapply(info, function(name) list())
   info <- c(list(...), info)
-  if (length(info) && is.null(names(info))) cli_abort("supplied measure entries must be named")
+  if (length(info) && is.null(names(info))) {
+    cli_abort("supplied measure entries must be named")
+  }
   for (n in names(info)) {
     if (overwrite_entry || is.null(built[[n]])) {
       l <- info[[n]]
@@ -215,7 +234,13 @@ data_measure_info <- function(path, ..., info = list(), references = list(), str
     if (is.null(l$full_name)) l$full_name <- n
     if (strict) {
       su <- names(l) %in% names(defaults)
-      if (verbose && any(!su)) cli_warn(paste0("unrecognized {?entry/entries} in ", n, ": {names(l)[!su]}"))
+      if (verbose && any(!su)) {
+        cli_warn(paste0(
+          "unrecognized {?entry/entries} in ",
+          n,
+          ": {names(l)[!su]}"
+        ))
+      }
       if (include_empty) {
         for (e in names(l)) {
           if (!is.null(defaults[[e]])) {
@@ -231,14 +256,24 @@ data_measure_info <- function(path, ..., info = list(), references = list(), str
       if (any(su)) l <- c(l, defaults[su])
     }
     if (!is.null(l$categories) && !is.list(l$categories)) {
-      l$categories <- structure(lapply(l$categories, function(e) list(default = e)), names = l$categories)
+      l$categories <- structure(
+        lapply(l$categories, function(e) list(default = e)),
+        names = l$categories
+      )
     }
     if (!is.null(l$variants) && !is.list(l$variants)) {
-      l$variants <- structure(lapply(l$variants, function(e) list(default = e)), names = l$categories)
+      l$variants <- structure(
+        lapply(l$variants, function(e) list(default = e)),
+        names = l$categories
+      )
     }
     if (verbose && !is.null(l$citations)) {
       su <- !l$citations %in% names(references)
-      if (any(su)) cli_warn("no matching reference entry for {.val {l$citations[su]}} in {.val {n}}")
+      if (any(su)) {
+        cli_warn(
+          "no matching reference entry for {.val {l$citations[su]}} in {.val {n}}"
+        )
+      }
     }
     built[[n]] <- l
   }
@@ -262,7 +297,11 @@ data_measure_info <- function(path, ..., info = list(), references = list(), str
     changed <- !identical(built, expanded)
     built <- expanded
     if (write && changed) {
-      path <- if (is.character(render)) render else sub("\\.json", "_rendered.json", path, TRUE)
+      path <- if (is.character(render)) {
+        render
+      } else {
+        sub("\\.json", "_rendered.json", path, TRUE)
+      }
       if (verbose) cli_bullets(c(i = "writing rendered info to {.path {path}}"))
       jsonlite::write_json(built, path, auto_unbox = TRUE, pretty = TRUE)
     }

@@ -79,6 +79,7 @@ types are rounded to show a set number of digits.
 }
 \item \strong{\code{unit}}: Prefix or suffix associated with the measure's type, such as \code{\%} for \code{percent},
 or \code{Mbps} for \code{rate}.
+\item \strong{\code{time_resolution}}: Temporal resolution of the variable, such as \code{year} or \code{week},
 \item \strong{\code{sources}}: A list or list of list containing source information, including any of these entries:
 \itemize{
 \item \code{name}: Name of the source (such as an organization name).

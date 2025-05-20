@@ -11,9 +11,12 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- input_button("button0", c(input = 1))
   parts <- make_build_environment()
-  eval(expression(
-    input_button("button0", c(input = 1))
-  ), parts)
+  eval(
+    expression(
+      input_button("button0", c(input = 1))
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
   expect_identical(parts$button$button0$effects, c(input = 1))
 })

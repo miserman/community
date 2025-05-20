@@ -12,7 +12,10 @@ if (file.exists(entities_file)) {
   entities <- vroom::vroom(
     "https://raw.githubusercontent.com/uva-bi-sdad/sdc.geographies/main/geographies_metadata.csv"
   )
-  entities <- entities[!duplicated(entities$geoid), c("geoid", "region_name", "region_type")]
+  entities <- entities[
+    !duplicated(entities$geoid),
+    c("geoid", "region_name", "region_type")
+  ]
   saveRDS(entities, entities_file, compress = "xz")
 }
 
@@ -20,19 +23,26 @@ datasets <- paste0(list.dirs("."), "/data/distribution")
 datasets <- datasets[dir.exists(datasets)]
 data_reformat_sdad(
   list.files(datasets, "\\.csv", full.names = TRUE),
-  metadata = entities, "docs/data"
+  metadata = entities,
+  "docs/data"
 )
-info <- lapply(list.files(datasets, "measure_info\\.json", full.names = TRUE), read_json)
+info <- lapply(
+  list.files(datasets, "measure_info\\.json", full.names = TRUE),
+  read_json
+)
 agg_info <- list()
 for (m in info) {
   for (e in names(m)) {
-    agg_info[[e]] <- if (e %in% names(agg_info)) c(agg_info[[e]], m[[e]]) else m[[e]]
+    agg_info[[e]] <- if (e %in% names(agg_info)) c(agg_info[[e]], m[[e]]) else
+      m[[e]]
   }
 }
 if (length(agg_info)) {
   write_json(
-    agg_info, "docs/data/measure_info.json",
-    auto_unbox = TRUE, pretty = TRUE
+    agg_info,
+    "docs/data/measure_info.json",
+    auto_unbox = TRUE,
+    pretty = TRUE
   )
 }
 
@@ -47,6 +57,11 @@ data_add(
   dir = "docs/data"
 )
 
-site_build(".", serve = TRUE, options = list(
-  polygon_outline = .5, color_scale_center = "median"
-))
+site_build(
+  ".",
+  serve = TRUE,
+  options = list(
+    polygon_outline = .5,
+    color_scale_center = "median"
+  )
+)

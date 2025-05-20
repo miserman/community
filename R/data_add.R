@@ -14,7 +14,10 @@
 #' @param sha A number specifying the Secure Hash Algorithm function,
 #' if \code{openssl} is available (checked with \code{Sys.which('openssl')}).
 #' @param clean Logical; if \code{TRUE}, strips special characters before saving.
+#' @param pretty Logical; if \code{TRUE}, will pretty-print the datapackage.
+#' @param summarize_ids: Logical; if \code{TRUE}, will include ID columns in schema field summaries.
 #' @param open_after Logical; if \code{TRUE}, opens the written datapackage after saving.
+#' @param verbose Logical; if \code{FALSE}, will not show status messages.
 #' @details
 #' \code{meta} should be a list with unnamed entries for entry in \code{filename},
 #' and each entry can include a named entry for any of these:
@@ -50,23 +53,39 @@
 #' @seealso Initialize the \code{datapackage.json} file with \code{\link{init_data}}.
 #' @export
 
-data_add <- function(filename, meta = list(), packagename = "datapackage.json", dir = ".", write = TRUE,
-                     refresh = TRUE, sha = "512", clean = FALSE, open_after = FALSE) {
+data_add <- function(
+  filename,
+  meta = list(),
+  packagename = "datapackage.json",
+  dir = ".",
+  write = TRUE,
+  refresh = TRUE,
+  sha = "512",
+  clean = FALSE,
+  pretty = FALSE,
+  summarize_ids = FALSE,
+  open_after = FALSE,
+  verbose = interactive()
+) {
   if (missing(filename)) cli_abort("{.arg filename} must be specified")
   setnames <- names(filename)
   if (file.exists(filename[[1]])) {
     if (dir == ".") dir <- dirname(filename[[1]])
     filename <- basename(filename)
   }
-  if (check_template("site", dir = dir)$status[["strict"]] &&
-    all(file.exists(paste0(dir, "/docs/data/", filename)))) {
+  if (
+    check_template("site", dir = dir)$status[["strict"]] &&
+      all(file.exists(paste0(dir, "/docs/data/", filename)))
+  ) {
     dir <- paste0(dir, "/docs/data")
   }
   if (any(!file.exists(paste0(dir, "/", filename)))) {
     filename <- filename[!file.exists(filename)]
     cli_abort("{?a file/files} did not exist: {filename}")
   }
-  package <- if (is.character(packagename) && file.exists(paste0(dir, "/", packagename))) {
+  package <- if (
+    is.character(packagename) && file.exists(paste0(dir, "/", packagename))
+  ) {
     paste0(dir, "/", packagename)
   } else {
     packagename
@@ -78,7 +97,10 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
         packagename <- package
         jsonlite::read_json(package)
       } else {
-        init_data(if (!is.null(setnames)) setnames[[1]] else filename[[1]], dir = dir)
+        init_data(
+          if (!is.null(setnames)) setnames[[1]] else filename[[1]],
+          dir = dir
+        )
       }
     }
     if (!is.list(package)) {
@@ -92,19 +114,40 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
   collect_metadata <- function(file) {
     f <- paste0(dir, "/", filename[[file]])
     m <- if (single_meta) meta else metas[[file]]
-    format <- if (grepl(".csv", f, fixed = TRUE)) "csv" else if (grepl(".rds", f, fixed = TRUE)) "rds" else "tsv"
+    format <- if (grepl(".parquet", f, fixed = TRUE)) {
+      "parquet"
+    } else if (grepl(".csv", f, fixed = TRUE)) {
+      "csv"
+    } else if (grepl(".rds", f, fixed = TRUE)) {
+      "rds"
+    } else {
+      "tsv"
+    }
     if (is.na(format)) format <- "rds"
     info <- file.info(f)
     metas <- list()
     unpack_meta <- function(n) {
-      if (!length(m[[n]])) list() else if (is.list(m[[n]][[1]])) m[[n]] else list(m[[n]])
+      if (!length(m[[n]])) {
+        list()
+      } else if (is.list(m[[n]][[1]])) {
+        m[[n]]
+      } else {
+        list(m[[n]])
+      }
     }
     ids <- unpack_meta("ids")
     idvars <- NULL
     for (i in seq_along(ids)) {
       if (is.list(ids[[i]])) {
-        if (length(ids[[i]]$map) == 1 && is.character(ids[[i]]$map) && file.exists(ids[[i]]$map)) {
-          ids[[i]]$map_content <- paste(readLines(ids[[i]]$map, warn = FALSE), collapse = "")
+        if (
+          length(ids[[i]]$map) == 1 &&
+            is.character(ids[[i]]$map) &&
+            file.exists(ids[[i]]$map)
+        ) {
+          ids[[i]]$map_content <- paste(
+            readLines(ids[[i]]$map, warn = FALSE),
+            collapse = ""
+          )
         }
       } else {
         ids[[i]] <- list(variable = ids[[i]])
@@ -113,8 +156,10 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
     }
     data <- if (format == "rds") {
       tryCatch(readRDS(f), error = function(e) NULL)
+    } else if (format == "parquet") {
+      tryCatch(read_parquet(f), error = function(e) NULL)
     } else {
-      attempt_read(f, if (length(idvars)) idvars[1] else "")
+      attempt_read(f, c("geography", "time", idvars))
     }
     if (is.null(data)) {
       cli_abort(c(
@@ -122,19 +167,27 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
         i = "check that it is in a compatible format"
       ))
     }
-    if (!all(rownames(data) == seq_len(nrow(data)))) data <- cbind(`_row` = rownames(data), data)
+    if (!all(rownames(data) == seq_len(nrow(data)))) {
+      data <- cbind(`_row` = rownames(data), data)
+    }
     timevar <- unlist(unpack_meta("time"))
     times <- if (is.null(timevar)) rep(1, nrow(data)) else data[[timevar]]
     times_unique <- unique(times)
     if (!single_meta) {
       varinf <- unpack_meta("variables")
       if (length(varinf) == 1 && is.character(varinf[[1]])) {
-        if (!file.exists(varinf[[1]])) varinf[[1]] <- paste0(dir, "/", varinf[[1]])
+        if (!file.exists(varinf[[1]])) {
+          varinf[[1]] <- paste0(dir, "/", varinf[[1]])
+        }
         if (file.exists(varinf[[1]])) {
           if (varinf[[1]] %in% names(metas)) {
             varinf <- metas[[varinf[[1]]]]
           } else {
-            varinf <- metas[[varinf[[1]]]] <- data_measure_info(varinf[[1]], write = FALSE, render = TRUE)
+            varinf <- metas[[varinf[[1]]]] <- data_measure_info(
+              varinf[[1]],
+              write = FALSE,
+              render = TRUE
+            )
           }
           varinf <- varinf[varinf != ""]
         }
@@ -159,6 +212,7 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
       ids = ids,
       id_length = if (length(idvars)) {
         id_lengths <- nchar(data[[idvars[1]]])
+        id_lengths <- id_lengths[!is.na(id_lengths)]
         if (all(id_lengths == id_lengths[1])) id_lengths[1] else 0
       } else {
         0
@@ -168,48 +222,66 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
       created = as.character(info$mtime),
       last_modified = as.character(info$ctime),
       row_count = nrow(data),
-      entity_count = if (length(idvars)) length(unique(data[[idvars[1]]])) else nrow(data),
+      entity_count = if (length(idvars)) {
+        length(unique(data[[idvars[1]]]))
+      } else {
+        nrow(data)
+      },
       schema = list(
-        fields = lapply(colnames(data)[!colnames(data) %in% idvars], function(cn) {
-          v <- data[[cn]]
-          invalid <- !is.finite(v)
-          r <- list(name = cn, duplicates = sum(duplicated(v)))
-          if (!single_meta) {
-            if (cn %in% varinf_full) {
-              r$info <- varinf[[cn]]
-            } else if (cn %in% varinf_suf) {
-              r$info <- varinf[[which(varinf_suf == cn)]]
+        fields = lapply(
+          if (summarize_ids) colnames(data) else
+            colnames(data)[!colnames(data) %in% idvars],
+          function(cn) {
+            v <- data[[cn]]
+            invalid <- !is.finite(v)
+            r <- list(name = cn, duplicates = sum(duplicated(v)))
+            if (!single_meta) {
+              if (cn %in% varinf_full) {
+                r$info <- varinf[[cn]]
+              } else if (cn %in% varinf_suf) {
+                r$info <- varinf[[which(varinf_suf == cn)]]
+              }
+              r$info <- r$info[r$info != ""]
             }
-            r$info <- r$info[r$info != ""]
+            su <- !is.na(v)
+            if (any(su)) {
+              r$time_range <- which(times_unique %in% range(times[su])) - 1
+              r$time_range <- if (length(r$time_range)) {
+                r$time_range[c(1, length(r$time_range))]
+              } else {
+                c(-1, -1)
+              }
+            } else {
+              r$time_range <- c(-1, -1)
+            }
+            if (!is.character(v) && all(invalid)) {
+              r$type <- "unknown"
+              r$missing <- length(v)
+            } else if (is.numeric(v)) {
+              r$type <- if (all(invalid | as.integer(v) == v)) {
+                "integer"
+              } else {
+                "float"
+              }
+              r$missing <- sum(invalid)
+              r$mean <- round(mean(v, na.rm = TRUE), 6)
+              r$sd <- round(sd(v, na.rm = TRUE), 6)
+              r$min <- round(min(v, na.rm = TRUE), 6)
+              r$max <- round(max(v, na.rm = TRUE), 6)
+            } else {
+              r$type <- "string"
+              if (!is.factor(v)) v <- as.factor(as.character(v))
+              r$missing <- sum(is.na(v) | is.nan(v) | grepl("^[\\s.-]$", v))
+              r$table <- structure(as.list(tabulate(v)), names = levels(v))
+            }
+            r
           }
-          su <- !is.na(v)
-          if (any(su)) {
-            r$time_range <- which(times_unique %in% range(times[su])) - 1
-            r$time_range <- if (length(r$time_range)) r$time_range[c(1, length(r$time_range))] else c(-1, -1)
-          } else {
-            r$time_range <- c(-1, -1)
-          }
-          if (!is.character(v) && all(invalid)) {
-            r$type <- "unknown"
-            r$missing <- length(v)
-          } else if (is.numeric(v)) {
-            r$type <- if (all(invalid | as.integer(v) == v)) "integer" else "float"
-            r$missing <- sum(invalid)
-            r$mean <- round(mean(v, na.rm = TRUE), 6)
-            r$sd <- round(sd(v, na.rm = TRUE), 6)
-            r$min <- round(min(v, na.rm = TRUE), 6)
-            r$max <- round(max(v, na.rm = TRUE), 6)
-          } else {
-            r$type <- "string"
-            if (!is.factor(v)) v <- as.factor(as.character(v))
-            r$missing <- sum(is.na(v) | is.nan(v) | grepl("^[\\s.-]$", v))
-            r$table <- structure(as.list(tabulate(v)), names = levels(v))
-          }
-          r
-        })
+        )
       )
     )
-    if (!single_meta && "_references" %in% names(varinf)) res[["_references"]] <- varinf[["_references"]]
+    if (!single_meta && "_references" %in% names(varinf)) {
+      res[["_references"]] <- varinf[["_references"]]
+    }
     if (Sys.which("openssl") != "") {
       res[[paste0("sha", sha)]] <- calculate_sha(f, sha)
     }
@@ -222,8 +294,12 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
     } else {
       single_meta <- TRUE
       if (length(meta$variables) == 1 && is.character(meta$variables)) {
-        if (!file.exists(meta$variables)) meta$variables <- paste0(dir, "/", meta$variables)
-        if (file.exists(meta$variables)) meta$variables <- jsonlite::read_json(meta$variables)
+        if (!file.exists(meta$variables)) {
+          meta$variables <- paste0(dir, "/", meta$variables)
+        }
+        if (file.exists(meta$variables)) {
+          meta$variables <- jsonlite::read_json(meta$variables)
+        }
       }
       meta$variables <- replace_equations(meta$variables)
       meta
@@ -238,7 +314,9 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
     })
   }
   metadata <- lapply(seq_along(filename), collect_metadata)
-  if (single_meta) package$measure_info <- lapply(meta$variables, function(e) e[e != ""])
+  if (single_meta) {
+    package$measure_info <- lapply(meta$variables, function(e) e[e != ""])
+  }
   package$resources <- c(metadata, if (!refresh) package$resources)
   names <- vapply(package$resources, "[[", "", "filename")
   if (anyDuplicated(names)) {
@@ -246,18 +324,36 @@ data_add <- function(filename, meta = list(), packagename = "datapackage.json", 
   }
   if (clean) {
     cf <- lma_dict("special", perl = TRUE, as.function = gsub)
-    package <- jsonlite::fromJSON(cf(jsonlite::toJSON(package, auto_unbox = TRUE)))
+    package <- jsonlite::fromJSON(cf(jsonlite::toJSON(
+      package,
+      auto_unbox = TRUE
+    )))
   }
   if (write) {
-    packagename <- if (is.character(packagename)) packagename else "datapackage.json"
+    packagename <- if (is.character(packagename)) {
+      packagename
+    } else {
+      "datapackage.json"
+    }
     jsonlite::write_json(
-      package, if (file.exists(packagename)) packagename else paste0(dir, "/", packagename),
-      auto_unbox = TRUE, digits = 6
+      package,
+      if (file.exists(packagename)) {
+        packagename
+      } else {
+        paste0(dir, "/", packagename)
+      },
+      auto_unbox = TRUE,
+      digits = 6,
+      pretty = pretty
     )
-    if (interactive()) {
-      cli_bullets(c(v = paste(
-        if (refresh) "updated resource in" else "added resource to", "datapackage.json:"
-      ), "*" = paste0("{.path ", packagename, "}")))
+    if (verbose) {
+      cli_bullets(c(
+        v = paste(
+          if (refresh) "updated resource in" else "added resource to",
+          "datapackage.json:"
+        ),
+        "*" = paste0("{.path ", packagename, "}")
+      ))
       if (open_after) navigateToFile(packagename)
     }
   }

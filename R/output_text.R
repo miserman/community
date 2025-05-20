@@ -29,9 +29,16 @@
 #' @return A character vector of the containing element of the text.
 #' @export
 
-output_text <- function(text, tag = "p", id = NULL, class = NULL, condition = NULL) {
+output_text <- function(
+  text,
+  tag = "p",
+  id = NULL,
+  class = NULL,
+  condition = NULL
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   if (is.null(id)) id <- paste0("text", caller$uid)
   parsed <- list()
   if (!is.null(names(text))) text <- list(text)
@@ -64,21 +71,38 @@ output_text <- function(text, tag = "p", id = NULL, class = NULL, condition = NU
           bid <- paste0("b", b)
           res$button[[bid]] <- list(
             text = as.list(sub(
-              "}", "", strsplit(gsub("^\\(|\\)?\\[.*$", "", rbb), "{", fixed = TRUE)[[1]],
+              "}",
+              "",
+              strsplit(gsub("^\\(|\\)?\\[.*$", "", rbb), "{", fixed = TRUE)[[
+                1
+              ]],
               fixed = TRUE
             )),
-            type = if (grepl("[r", rbb, fixed = TRUE)) "reset" else if (grepl("[n", rbb, fixed = TRUE)) "note" else "update",
-            target = strsplit(gsub("^[^[]*\\[[^\\s]+\\s?|\\]$", "", rbb, perl = TRUE), ",")[[1]]
+            type = if (grepl("[r", rbb, fixed = TRUE)) "reset" else if (
+              grepl("[n", rbb, fixed = TRUE)
+            )
+              "note" else "update",
+            target = strsplit(
+              gsub("^[^[]*\\[[^\\s]+\\s?|\\]$", "", rbb, perl = TRUE),
+              ","
+            )[[1]]
           )
           if (!length(res$button[[bid]]$target)) {
-            res$button[[bid]]$target <- strsplit(if (grepl("{", rbb, fixed = TRUE)) {
-              gsub("^[^{].*\\{|\\}.*$", "", rbb)
-            } else {
-              sub("\\[.*$", "", rbb)
-            }, ",")[[1]]
+            res$button[[bid]]$target <- strsplit(
+              if (grepl("{", rbb, fixed = TRUE)) {
+                gsub("^[^{].*\\{|\\}.*$", "", rbb)
+              } else {
+                sub("\\[.*$", "", rbb)
+              },
+              ","
+            )[[1]]
           }
         }
-        regmatches(e, m) <- as.list(paste0("_SPLT_", paste0("b", seq_along(rb)), "_SPLT_"))
+        regmatches(e, m) <- as.list(paste0(
+          "_SPLT_",
+          paste0("b", seq_along(rb)),
+          "_SPLT_"
+        ))
       }
     }
 
@@ -97,13 +121,27 @@ output_text <- function(text, tag = "p", id = NULL, class = NULL, condition = NU
       })
     }
   }
-  r <- paste0(c(
-    "<", tag, ' data-autoType="text" id="', id, '"',
-    ' class="auto-output output-text', if (!is.null(class)) paste("", class), '"',
-    "></", tag, ">"
-  ), collapse = "")
+  r <- paste0(
+    c(
+      "<",
+      tag,
+      ' data-autoType="text" id="',
+      id,
+      '"',
+      ' class="auto-output output-text',
+      if (!is.null(class)) paste("", class),
+      '"',
+      "></",
+      tag,
+      ">"
+    ),
+    collapse = ""
+  )
   if (building) {
-    caller$text[[id]] <- c(list(text = parsed), if (!is.null(condition)) condition <- parse_rule(condition))
+    caller$text[[id]] <- c(
+      list(text = parsed),
+      if (!is.null(condition)) condition <- parse_rule(condition)
+    )
     caller$content <- c(caller$content, r)
     caller$uid <- caller$uid + 1
   }

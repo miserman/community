@@ -1,27 +1,47 @@
 input_dataview(
-  id = "default_view", y = "selected_variable",
-  time_agg = "selected_time", dataset = "selected_dataset"
+  id = "default_view",
+  y = "selected_variable",
+  time_agg = "selected_time",
+  dataset = "selected_dataset"
 )
 
 page_section(
-  wraps = "col", sizes = c(4, NA),
+  wraps = "col",
+  sizes = c(4, NA),
   page_section(
     wraps = "row",
     page_section(
-      wraps = "col", sizes = c(9, NA),
+      wraps = "col",
+      sizes = c(9, NA),
       input_combobox(
         "Variable",
-        options = "variables", default = 0, depends = "selected_dataset", id = "selected_variable"
+        options = "variables",
+        default = 0,
+        depends = "selected_dataset",
+        id = "selected_variable"
       ),
       input_number(
         "Time",
-        min = "filter.time_min", max = "filter.time_max", default = "max", id = "selected_time"
+        min = "filter.time_min",
+        max = "filter.time_max",
+        default = "max",
+        id = "selected_time"
       )
     ),
-    input_select("Layer", options = "datasets", default = "county", id = "selected_dataset"),
+    input_select(
+      "Layer",
+      options = "datasets",
+      default = "county",
+      id = "selected_dataset"
+    ),
     "<br />",
     output_info(title = "variables.short_name"),
-    input_button("Download", "export", query = list(include = "selected_variable"), class = "btn-full"),
+    input_button(
+      "Download",
+      "export",
+      query = list(include = "selected_variable"),
+      class = "btn-full"
+    ),
     output_legend(id = "main_legend", subto = c("main_map", "main_plot")),
     output_info(
       default = c(body = "Hover over output elements for more information."),
@@ -39,7 +59,8 @@ page_section(
     )
   ),
   page_section(
-    output_map( # by default show
+    output_map(
+      # by default show
       list(list(
         name = "county",
         url = paste0(
@@ -56,8 +77,12 @@ page_section(
         zoomAnimation = "settings.map_zoom_animation"
       ),
       tiles = list(
-        light = list(url = "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png"),
-        dark = list(url = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png")
+        light = list(
+          url = "https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}{r}.png"
+        ),
+        dark = list(
+          url = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        )
       ),
       attribution = list(
         list(
@@ -77,18 +102,28 @@ page_section(
       )
     ),
     output_plot(
-      x = "time", y = "selected_variable", id = "main_plot", subto = c("main_map", "main_legend"),
+      x = "time",
+      y = "selected_variable",
+      id = "main_plot",
+      subto = c("main_map", "main_legend"),
       options = list(
         layout = list(
           xaxis = list(title = FALSE, fixedrange = TRUE),
           yaxis = list(fixedrange = TRUE, zeroline = FALSE)
         ),
         data = data.frame(
-          type = c("plot_type", "box"), fillcolor = c(NA, "transparent"),
-          hoverinfo = c("text", NA), mode = "lines+markers", showlegend = FALSE,
-          name = c(NA, "Summary"), marker.line.color = "#767676", marker.line.width = 1
+          type = c("plot_type", "box"),
+          fillcolor = c(NA, "transparent"),
+          hoverinfo = c("text", NA),
+          mode = "lines+markers",
+          showlegend = FALSE,
+          name = c(NA, "Summary"),
+          marker.line.color = "#767676",
+          marker.line.width = 1
         ),
-        config = list(modeBarButtonsToRemove = c("select2d", "lasso2d", "sendDataToCloud"))
+        config = list(
+          modeBarButtonsToRemove = c("select2d", "lasso2d", "sendDataToCloud")
+        )
       )
     )
   )

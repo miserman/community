@@ -85,8 +85,17 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_button <- function(label, target = "reset_selection", id = label, dataview = NULL,
-                         query = list(), from_api = FALSE, class = "", ..., note = NULL) {
+input_button <- function(
+  label,
+  target = "reset_selection",
+  id = label,
+  dataview = NULL,
+  query = list(),
+  from_api = FALSE,
+  class = "",
+  ...,
+  note = NULL
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   if (missing(target) && !(missing(dataview) || missing(query))) {
@@ -94,35 +103,68 @@ input_button <- function(label, target = "reset_selection", id = label, dataview
   }
   r <- c(
     '<div class="wrapper button-wrapper">',
-    if (is.character(target) && length(target) == 1 && grepl("://", target, fixed = TRUE)) {
+    if (
+      is.character(target) &&
+        length(target) == 1 &&
+        grepl("://", target, fixed = TRUE)
+    ) {
       paste0(
-        '<a role="button" class="btn', if (class != "") paste("", class),
-        '" id="', id, '" target="_blank" rel="noreferrer" href="', target, '"',
-        if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+        '<a role="button" class="btn',
+        if (class != "") paste("", class),
+        '" id="',
+        id,
+        '" target="_blank" rel="noreferrer" href="',
+        target,
+        '"',
+        if (length(a))
+          unlist(lapply(
+            seq_along(a),
+            function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+          )),
         if (!is.null(note)) paste0(' aria-description="', note, '"'),
-        ">", label, "</a>"
+        ">",
+        label,
+        "</a>"
       )
     } else {
       paste0(
-        '<button type="button" data-autoType="button" class="auto-input btn', if (class != "") paste("", class),
-        '" id="', id, '"', if (length(target) == 1 && !is.list(target) && is.null(names(target))) paste0(' data-target="', target, '"'),
-        if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+        '<button type="button" data-autoType="button" class="auto-input btn',
+        if (class != "") paste("", class),
+        '" id="',
+        id,
+        '"',
+        if (length(target) == 1 && !is.list(target) && is.null(names(target)))
+          paste0(' data-target="', target, '"'),
+        if (length(a))
+          unlist(lapply(
+            seq_along(a),
+            function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+          )),
         if (!is.null(note)) paste0(' aria-description="', note, '"'),
-        ">", label, "</button>"
+        ">",
+        label,
+        "</button>"
       )
     },
     "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     if (length(target) == 1 && target %in% c("export", "copy")) {
-      caller$button[[id]] <- Filter(function(e) length(e) > 1 || (length(e) && (!is.logical(e) || e)), list(
-        effects = target,
-        dataview = dataview,
-        query = query,
-        api = from_api
-      ))
-    } else if (!is.null(names(target))) caller$button[[id]] <- list(effects = target)
+      caller$button[[id]] <- Filter(
+        function(e) length(e) > 1 || (length(e) && (!is.logical(e) || e)),
+        list(
+          effects = target,
+          dataview = dataview,
+          query = query,
+          api = from_api
+        )
+      )
+    } else if (!is.null(names(target)))
+      caller$button[[id]] <- list(effects = target)
     caller$content <- c(caller$content, r)
   }
   r

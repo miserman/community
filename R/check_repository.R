@@ -113,34 +113,64 @@
 #' }
 #' @export
 
-check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?$", exclude = NULL,
-                             value = "value", value_name = "measure", id = "geoid", time = "year", dataset = "region_type",
-                             entity_info = c("region_type", "region_name"), check_values = TRUE, attempt_repair = FALSE,
-                             write_infos = FALSE, verbose = TRUE) {
+check_repository <- function(
+  dir = ".",
+  search_pattern = "\\.csv(?:\\.[gbx]z2?)?$",
+  exclude = NULL,
+  value = "value",
+  value_name = "measure",
+  id = "geoid",
+  time = "year",
+  dataset = "region_type",
+  entity_info = c("region_type", "region_name"),
+  check_values = TRUE,
+  attempt_repair = FALSE,
+  write_infos = FALSE,
+  verbose = TRUE
+) {
   if (!dir.exists(dir)) cli_abort("{.path {dir}} does not exist")
   project_check <- check_template("repository", dir = dir)
   if (project_check$exists) {
     if (length(project_check$incomplete)) {
-      cli_alert_warning("please update template content in {.file {project_check$incomplete}}")
+      cli_alert_warning(
+        "please update template content in {.file {project_check$incomplete}}"
+      )
     }
   }
   files <- list.files(dir, search_pattern, recursive = TRUE, full.names = TRUE)
-  files <- sort(files[!grepl(paste0(
-    "[/\\](?:docs|code|working|original",
-    if (length(exclude)) paste0("|", paste(exclude, collapse = "|")),
-    ")[/\\]"
-  ), files, TRUE)])
+  files <- sort(files[
+    !grepl(
+      paste0(
+        "[/\\](?:docs|code|working|original",
+        if (length(exclude)) paste0("|", paste(exclude, collapse = "|")),
+        ")[/\\]"
+      ),
+      files,
+      TRUE
+    )
+  ])
   if (!length(files)) cli_abort("no files found")
   i <- 0
   if (verbose) cli_h1("measure info")
   meta <- list()
-  info_files <- sort(list.files(dir, "^measure_info[^.]*\\.json$", full.names = TRUE, recursive = TRUE))
+  info_files <- sort(list.files(
+    dir,
+    "^measure_info[^.]*\\.json$",
+    full.names = TRUE,
+    recursive = TRUE
+  ))
   info_files <- info_files[
-    !grepl("docs/data", info_files, fixed = TRUE) & !duplicated(gsub("_rendered|/code/|/data/", "", info_files))
+    !grepl("docs/data", info_files, fixed = TRUE) &
+      !duplicated(gsub("_rendered|/code/|/data/", "", info_files))
   ]
   results <- list(data = files, info = info_files)
   required_fields <- c(
-    "category", "long_name", "short_name", "long_description", "aggregation_method", "data_type"
+    "category",
+    "long_name",
+    "short_name",
+    "long_description",
+    "aggregation_method",
+    "data_type"
   )
   required_refs <- c("author", "year", "title")
   required_source <- c("name", "date_accessed")
@@ -156,10 +186,16 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
   }
   all_issues <- list()
   for (f in info_files) {
-    m <- tryCatch(data_measure_info(
-      f,
-      render = TRUE, write = write_infos, verbose = FALSE, open_after = FALSE
-    ), error = function(e) NULL)
+    m <- tryCatch(
+      data_measure_info(
+        f,
+        render = TRUE,
+        write = write_infos,
+        verbose = FALSE,
+        open_after = FALSE
+      ),
+      error = function(e) NULL
+    )
     if (is.null(m)) cli_abort("measure info is malformed: {.file {f}}")
     i <- i + 1
     if (verbose) cli_progress_update()
@@ -184,35 +220,68 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
           if (any(su)) {
             missing_required <- required_refs[su]
             results$info_refs_missing[[f]] <- c(
-              results$info_refs_missing[[f]], paste0(e, ":", paste(missing_required, collapse = ","))
+              results$info_refs_missing[[f]],
+              paste0(e, ":", paste(missing_required, collapse = ","))
             )
-            issues <- c(issues, paste0(
-              "{.arg _references} {.strong {.field ", e, "}} is missing ",
-              if (sum(su) > 1) "entries: " else "an entry: ",
-              paste0("{.pkg ", missing_required, "}", collapse = ", ")
-            ))
+            issues <- c(
+              issues,
+              paste0(
+                "{.arg _references} {.strong {.field ",
+                e,
+                "}} is missing ",
+                if (sum(su) > 1) "entries: " else "an entry: ",
+                paste0("{.pkg ", missing_required, "}", collapse = ", ")
+              )
+            )
           }
           if ("author" %in% names(refs[[e]])) {
-            if (!is.list(refs[[e]]$author) || !is.null(names(refs[[e]]$author))) refs[[e]]$author <- list(refs[[e]]$author)
+            if (!is.list(refs[[e]]$author) || !is.null(names(refs[[e]]$author)))
+              refs[[e]]$author <- list(refs[[e]]$author)
             for (i in seq_along(refs[[e]]$author)) {
-              if (is.list(refs[[e]]$author[[i]]) && is.null(refs[[e]]$author[[i]]$family)) {
+              if (
+                is.list(refs[[e]]$author[[i]]) &&
+                  is.null(refs[[e]]$author[[i]]$family)
+              ) {
                 results$info_refs_author_entry[[f]] <- c(
-                  results$info_refs_author_entry[[f]], paste0(e, ":", i)
+                  results$info_refs_author_entry[[f]],
+                  paste0(e, ":", i)
                 )
-                issues <- c(issues, paste0(
-                  "{.arg _references} {.strong {.field ", e, "}}'s number ", i,
-                  " author is missing a {.pkg family} entry"
-                ))
+                issues <- c(
+                  issues,
+                  paste0(
+                    "{.arg _references} {.strong {.field ",
+                    e,
+                    "}}'s number ",
+                    i,
+                    " author is missing a {.pkg family} entry"
+                  )
+                )
               }
             }
           }
-          for (re in c("year", "title", "journal", "volume", "page", "doi", "version", "url")) {
+          for (re in c(
+            "year",
+            "title",
+            "journal",
+            "volume",
+            "page",
+            "doi",
+            "version",
+            "url"
+          )) {
             if (is.list(refs[[e]][[re]])) {
               type <- paste0("info_refs_", re)
               results[[type]][[f]] <- c(results[[type]][[f]], e)
-              issues <- c(issues, paste0(
-                "{.arg _references} {.strong {.field ", e, "}}'s {.pkg ", re, "} entry is a list"
-              ))
+              issues <- c(
+                issues,
+                paste0(
+                  "{.arg _references} {.strong {.field ",
+                  e,
+                  "}}'s {.pkg ",
+                  re,
+                  "} entry is a list"
+                )
+              )
             }
           }
         }
@@ -220,15 +289,25 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
     }
     for (n in sort(names(m))) {
       if (!grepl("^_", n)) {
-        cm <- Filter(function(e) length(e) && (length(e) > 1 || e != ""), m[[n]])
+        cm <- Filter(
+          function(e) length(e) && (length(e) > 1 || e != ""),
+          m[[n]]
+        )
         entries <- names(cm)
         mf <- required_fields[!required_fields %in% entries]
         if (length(mf)) {
           results$info_incomplete[[f]] <- c(results$info_incomplete[[f]], n)
-          issues <- c(issues, paste0(
-            "{.strong {.field ", n, "}} is missing ", if (length(mf) > 1) "fields" else "a field", ": ",
-            paste(paste0("{.pkg ", mf, "}"), collapse = ", ")
-          ))
+          issues <- c(
+            issues,
+            paste0(
+              "{.strong {.field ",
+              n,
+              "}} is missing ",
+              if (length(mf) > 1) "fields" else "a field",
+              ": ",
+              paste(paste0("{.pkg ", mf, "}"), collapse = ", ")
+            )
+          )
         }
         if ("sources" %in% entries) {
           if (!is.null(names(cm$sources))) cm$sources <- list(cm$sources)
@@ -239,22 +318,39 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
               if (any(su)) {
                 missing_required <- required_source[su]
                 results$info_source_missing[[f]] <- c(
-                  results$info_source_missing[[f]], paste0(m, ":", paste(missing_required, collapse = ","))
+                  results$info_source_missing[[f]],
+                  paste0(m, ":", paste(missing_required, collapse = ","))
                 )
-                issues <- c(issues, paste0(
-                  "{.strong {.field ", n, "}}'s number ", i, " {.arg source} entry is missing ",
-                  if (sum(su) > 1) "entries: " else "an entry: ",
-                  paste0("{.pkg ", missing_required, "}", collapse = ", ")
-                ))
+                issues <- c(
+                  issues,
+                  paste0(
+                    "{.strong {.field ",
+                    n,
+                    "}}'s number ",
+                    i,
+                    " {.arg source} entry is missing ",
+                    if (sum(su) > 1) "entries: " else "an entry: ",
+                    paste0("{.pkg ", missing_required, "}", collapse = ", ")
+                  )
+                )
               }
             }
             for (re in c(required_source, "location", "location_url")) {
               if (is.list(s[[re]])) {
                 type <- paste0("info_source_", re)
                 results[[type]][[f]] <- c(results[[type]][[f]], n)
-                issues <- c(issues, paste0(
-                  "{.strong {.field ", n, "}}'s number ", i, " {.arg source} entry's {.pkg ", re, "} entry is a list"
-                ))
+                issues <- c(
+                  issues,
+                  paste0(
+                    "{.strong {.field ",
+                    n,
+                    "}}'s number ",
+                    i,
+                    " {.arg source} entry's {.pkg ",
+                    re,
+                    "} entry is a list"
+                  )
+                )
               }
             }
           }
@@ -269,29 +365,64 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
         }
         if ("layer" %in% entries) {
           if ("source" %in% names(cm$layer)) {
-            if (is.list(cm$layer$source) && !"url" %in% names(cm$layer$source)) {
-              results$info_layer_source_url[[f]] <- c(results$info_layer_source_url[[f]], n)
-              issues <- c(issues, paste0(
-                "{.strong {.field ", n, "}}'s {.arg source} entry is a list, but doesn't have a {.pkg url} entry"
-              ))
+            if (
+              is.list(cm$layer$source) && !"url" %in% names(cm$layer$source)
+            ) {
+              results$info_layer_source_url[[f]] <- c(
+                results$info_layer_source_url[[f]],
+                n
+              )
+              issues <- c(
+                issues,
+                paste0(
+                  "{.strong {.field ",
+                  n,
+                  "}}'s {.arg source} entry is a list, but doesn't have a {.pkg url} entry"
+                )
+              )
             }
           } else {
-            results$info_layer_source[[f]] <- c(results$info_layer_source[[f]], n)
-            issues <- c(issues, paste0(
-              "{.strong {.field ", n, "}}'s {.arg layer} entry is missing a {.pkg source} entry"
-            ))
+            results$info_layer_source[[f]] <- c(
+              results$info_layer_source[[f]],
+              n
+            )
+            issues <- c(
+              issues,
+              paste0(
+                "{.strong {.field ",
+                n,
+                "}}'s {.arg layer} entry is missing a {.pkg source} entry"
+              )
+            )
           }
           if ("filter" %in% names(cm$layer)) {
-            if (!is.null(names(cm$layer$filter))) cm$layer$filter <- list(cm$layer$filter)
+            if (!is.null(names(cm$layer$filter)))
+              cm$layer$filter <- list(cm$layer$filter)
             for (i in seq_along(cm$layer$filter)) {
-              missing_required <- required_layer_filter[!required_layer_filter %in% names(cm$layer$filter[[i]])]
+              missing_required <- required_layer_filter[
+                !required_layer_filter %in% names(cm$layer$filter[[i]])
+              ]
               if (length(missing_required)) {
-                results$info_layer_filter[[f]] <- c(results$info_layer_filter[[f]], n)
-                issues <- c(issues, paste0(
-                  "{.strong {.field ", n, "}}'s number ", i, " {.arg filter} entry is missing ",
-                  if (length(missing_required) > 1) "entries: " else "an entry: ",
-                  paste(paste0("{.pkg ", missing_required, "}"), collapse = ", ")
-                ))
+                results$info_layer_filter[[f]] <- c(
+                  results$info_layer_filter[[f]],
+                  n
+                )
+                issues <- c(
+                  issues,
+                  paste0(
+                    "{.strong {.field ",
+                    n,
+                    "}}'s number ",
+                    i,
+                    " {.arg filter} entry is missing ",
+                    if (length(missing_required) > 1) "entries: " else
+                      "an entry: ",
+                    paste(
+                      paste0("{.pkg ", missing_required, "}"),
+                      collapse = ", "
+                    )
+                  )
+                )
               }
             }
           }
@@ -316,14 +447,32 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
       su <- !flagged_references[[r]] %in% known_references
       if (any(su)) {
         f <- strsplit(r, ":::", fixed = TRUE)[[1]]
-        results$info_citation[[f[1]]] <- c(results$info_citation[[f[1]]], paste0(
-          f[2], ": ", paste(flagged_references[[r]][su], collapse = ", ")
-        ))
-        all_issues[[f[1]]] <- c(all_issues[[f[1]]], c(">" = paste0(
-          "unknown {.arg citation} ", if (sum(su) > 1) "entries" else "entry",
-          " in {.strong {.field ", f[2], "}}: ",
-          paste0("{.pkg ", flagged_references[[r]][su], "}", collapse = ", ")
-        )))
+        results$info_citation[[f[1]]] <- c(
+          results$info_citation[[f[1]]],
+          paste0(
+            f[2],
+            ": ",
+            paste(flagged_references[[r]][su], collapse = ", ")
+          )
+        )
+        all_issues[[f[1]]] <- c(
+          all_issues[[f[1]]],
+          c(
+            ">" = paste0(
+              "unknown {.arg citation} ",
+              if (sum(su) > 1) "entries" else "entry",
+              " in {.strong {.field ",
+              f[2],
+              "}}: ",
+              paste0(
+                "{.pkg ",
+                flagged_references[[r]][su],
+                "}",
+                collapse = ", "
+              )
+            )
+          )
+        )
       }
     }
   }
@@ -339,7 +488,8 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
   if (verbose) {
     cli_h1("data")
     cli_progress_step(
-      "checking {i} of {length(files)} data file{?/s}", "checked {length(files)} data file{?/s}",
+      "checking {i} of {length(files)} data file{?/s}",
+      "checked {length(files)} data file{?/s}",
       spinner = TRUE
     )
   }
@@ -358,7 +508,10 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
     path <- files[[i]]
     f <- files_short[[i]]
     sep <- if (grepl(".csv", path, fixed = TRUE)) "," else "\t"
-    cols <- tryCatch(scan(path, "", sep = sep, nlines = 1, quiet = TRUE), error = function(e) NULL)
+    cols <- tryCatch(
+      scan(path, "", sep = sep, nlines = 1, quiet = TRUE),
+      error = function(e) NULL
+    )
     lcols <- tolower(cols)
     su <- !cols %in% vars & lcols %in% vars
     if (any(su)) cols[su] <- lcols[su]
@@ -366,11 +519,19 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
       d <- if (is.null(cols)) {
         NULL
       } else {
-        tryCatch(as.data.frame(read_delim_arrow(
-          gzfile(path), sep,
-          skip = 1, col_names = cols,
-          col_types = paste(c("c", "n")[as.integer(cols %in% c(value, time)) + 1L], collapse = "")
-        )), error = function(e) NULL)
+        tryCatch(
+          as.data.frame(read_delim_arrow(
+            gzfile(path),
+            sep,
+            skip = 1,
+            col_names = cols,
+            col_types = paste(
+              c("c", "n")[as.integer(cols %in% c(value, time)) + 1L],
+              collapse = ""
+            )
+          )),
+          error = function(e) NULL
+        )
       }
       if (is.null(d)) {
         results$fail_read <- c(results$fail_read, f)
@@ -402,7 +563,11 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
             }
             su <- grep("\\de[+-]?\\d", d[[id]])
             if (length(su)) {
-              d[[id]][su] <- gsub("^\\s+|\\s+$", "", format(as.numeric(d[[id]][su]), scientific = FALSE))
+              d[[id]][su] <- gsub(
+                "^\\s+|\\s+$",
+                "",
+                format(as.numeric(d[[id]][su]), scientific = FALSE)
+              )
               repairs <- c(repairs, "warn_scientific")
             }
             if (nrow(d)) {
@@ -447,12 +612,18 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
                 if (!is.null(mm)) {
                   type <- mm$aggregation_method
                   if (is.null(type) || type == "") {
-                    type <- if (!is.null(mm$measure_type) && mm$measure_type == "") mm$type else mm$measure_type
+                    type <- if (
+                      !is.null(mm$measure_type) && mm$measure_type == ""
+                    )
+                      mm$type else mm$measure_type
                     if (is.null(type)) type <- ""
                   }
                   if (grepl("percent", type, fixed = TRUE)) {
                     if (any(mvs > 0) && !any(mvs > 1)) {
-                      d[[value]][d[[value_name]] == m] <- d[[value]][d[[value_name]] == m] * 100
+                      d[[value]][d[[value_name]] == m] <- d[[value]][
+                        d[[value_name]] == m
+                      ] *
+                        100
                       repairs <- c(repairs, "warn_small_percents")
                     }
                   }
@@ -461,7 +632,10 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
             }
             if (length(repairs)) {
               if (!nrow(d)) {
-                if (verbose) cli_alert_danger("{.strong attempting repairs ({repairs}) removed all rows of {.file {f}}}")
+                if (verbose)
+                  cli_alert_danger(
+                    "{.strong attempting repairs ({repairs}) removed all rows of {.file {f}}}"
+                  )
               } else {
                 tf <- sub("\\..+(?:\\.[bgx]z2?)?$", ".csv.xz", path)
                 w <- tryCatch(
@@ -472,18 +646,26 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
                   error = function(e) NULL
                 )
                 if (is.null(w)) {
-                  if (verbose) cli_alert_danger("failed to write repairs ({.field {repairs}}) to {.file {f}}")
+                  if (verbose)
+                    cli_alert_danger(
+                      "failed to write repairs ({.field {repairs}}) to {.file {f}}"
+                    )
                 } else {
                   if (path != tf) {
                     unlink(path)
                   }
-                  if (verbose) cli_alert_info("wrote repairs ({.field {repairs}}) to {.file {tf}}")
+                  if (verbose)
+                    cli_alert_info(
+                      "wrote repairs ({.field {repairs}}) to {.file {tf}}"
+                    )
                 }
               }
             }
           } else {
-            if (!grepl("[bgx]z2?$", f)) results$warn_compressed <- c(results$warn_compressed, f)
-            if (any(cols == "")) results$warn_blank_colnames <- c(results$warn_blank_colnames, f)
+            if (!grepl("[bgx]z2?$", f))
+              results$warn_compressed <- c(results$warn_compressed, f)
+            if (any(cols == ""))
+              results$warn_blank_colnames <- c(results$warn_blank_colnames, f)
             if (anyNA(d[[value]])) {
               results$warn_value_nas <- c(results$warn_value_nas, f)
               if (ck_values) d[[value]][is.na(d[[value]])] <- 0
@@ -492,7 +674,8 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
               results$warn_id_nas <- c(results$warn_id_nas, f)
               d[[id]][is.na(d[[id]])] <- "NA"
             }
-            if (any(grepl("\\de[+-]\\d", d[[id]]))) results$warn_scientific <- c(results$warn_scientific, f)
+            if (any(grepl("\\de[+-]\\d", d[[id]])))
+              results$warn_scientific <- c(results$warn_scientific, f)
             if (anyNA(d[[value_name]])) {
               results$warn_value_name_nas <- c(results$warn_value_name_nas, f)
               d[[value_name]][is.na(d[[value_name]])] <- "NA"
@@ -501,7 +684,8 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
               results$warn_dataset_nas <- c(results$warn_dataset_nas, f)
               d[[dataset]][is.na(d[[dataset]])] <- "NA"
             }
-            if (all_entity_info && anyNA(d[, entity_info])) results$warn_entity_info_nas <- c(results$warn_entity_info_nas, f)
+            if (all_entity_info && anyNA(d[, entity_info]))
+              results$warn_entity_info_nas <- c(results$warn_entity_info_nas, f)
             if (time %in% cols && anyNA(d[[time]])) {
               results$warn_time_nas <- c(results$warn_time_nas, f)
               d[[time]][is.na(d[[time]])] <- "NA"
@@ -525,8 +709,13 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
             measures <- unique(d[[value_name]])
             measures <- sort(measures[measures != "NA"])
             su <- !measures %in% rendered_names
-            if (any(su)) su[su] <- !make_full_name(f, measures[su]) %in% names(meta)
-            if (any(su)) results$warn_missing_info[[f]] <- c(results$warn_missing_info[[f]], measures[su])
+            if (any(su))
+              su[su] <- !make_full_name(f, measures[su]) %in% names(meta)
+            if (any(su))
+              results$warn_missing_info[[f]] <- c(
+                results$warn_missing_info[[f]],
+                measures[su]
+              )
 
             smids <- split(d[[id]], d[[value_name]])
             if (ck_values) md <- split(d[[value]], d[[value_name]])
@@ -536,14 +725,20 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
               su <- which(id_chars == 12)
               if (length(su)) {
                 su <- su[grep("[^0-9]", mids[su], invert = TRUE)]
-                if (length(su) && !any(unique(substring(mids[su], 1, 11)) %in% mids)) {
+                if (
+                  length(su) &&
+                    !any(unique(substring(mids[su], 1, 11)) %in% mids)
+                ) {
                   results$warn_bg_agg[[f]] <- c(results$warn_bg_agg[[f]], m)
                 }
               }
               su <- which(id_chars == 11)
               if (length(su)) {
                 su <- su[grep("[^0-9]", mids[su], invert = TRUE)]
-                if (length(su) && !any(unique(substring(mids[su], 1, 5)) %in% mids)) {
+                if (
+                  length(su) &&
+                    !any(unique(substring(mids[su], 1, 5)) %in% mids)
+                ) {
                   results$warn_tr_agg[[f]] <- c(results$warn_tr_agg[[f]], m)
                 }
               }
@@ -554,23 +749,37 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
                 if (!is.null(mm)) {
                   type <- mm$aggregation_method
                   if (is.null(type) || type == "") {
-                    type <- if (!is.null(mm$measure_type) && mm$measure_type == "") mm$type else mm$measure_type
+                    type <- if (
+                      !is.null(mm$measure_type) && mm$measure_type == ""
+                    )
+                      mm$type else mm$measure_type
                     if (is.null(type)) type <- ""
                   }
                   maxv <- max(mvs)
                   if (grepl("percent", type, fixed = TRUE)) {
                     if (maxv > 0 && !any(mvs > 1)) {
-                      results$warn_small_percents[[f]] <- c(results$warn_small_percents[[f]], m)
+                      results$warn_small_percents[[f]] <- c(
+                        results$warn_small_percents[[f]],
+                        m
+                      )
                     }
                   }
                   if (!is.null(mm$data_type) && mm$data_type == "integer") {
                     if (any(mvs %% 1 != 0)) {
-                      results$warn_double_ints[[f]] <- c(results$warn_double_ints[[f]], m)
+                      results$warn_double_ints[[f]] <- c(
+                        results$warn_double_ints[[f]],
+                        m
+                      )
                     }
                   } else {
                     vm <- min(mvs)
-                    if (vm >= 0 && maxv < 1 && mean(mvs > 0 & mvs < 1e-4) > .4) {
-                      results$warn_small_values[[f]] <- c(results$warn_small_values[[f]], m)
+                    if (
+                      vm >= 0 && maxv < 1 && mean(mvs > 0 & mvs < 1e-4) > .4
+                    ) {
+                      results$warn_small_values[[f]] <- c(
+                        results$warn_small_values[[f]],
+                        m
+                      )
                     }
                   }
                 }
@@ -590,7 +799,9 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
   long_paths <- files_short[nchar(files_short) > 140]
   n_long_paths <- length(long_paths)
   if (verbose && n_long_paths) {
-    cli_alert_warning("{.strong {n_long_paths} {?path is/paths are} very long (over 140 character):}")
+    cli_alert_warning(
+      "{.strong {n_long_paths} {?path is/paths are} very long (over 140 character):}"
+    )
     cli_bullets(structure(
       paste0("(", nchar(long_paths), ") {.field ", long_paths, "}"),
       names = rep(">", n_long_paths)
@@ -612,9 +823,12 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
     }
   }
 
-  warnings <- unique(unlist(lapply(grep("^warn_", sort(names(results)), value = TRUE), function(w) {
-    if (is.list(results[[w]])) names(results[[w]]) else results[[w]]
-  }), use.names = FALSE))
+  warnings <- unique(unlist(
+    lapply(grep("^warn_", sort(names(results)), value = TRUE), function(w) {
+      if (is.list(results[[w]])) names(results[[w]]) else results[[w]]
+    }),
+    use.names = FALSE
+  ))
   n_warn <- length(warnings)
   if (n_warn) {
     res_summary["WARN"] <- n_warn
@@ -650,43 +864,76 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
     for (s in names(sections)) {
       if (length(results[[s]])) {
         if (verbose) cli_alert_warning(paste0("{.strong ", sections[[s]], "}"))
-        if (s == "warn_missing_info") meta_base <- sub("^[^:]*:", "", names(meta))
-        missing_info <- unlist(lapply(
-          names(results[[s]]),
-          if (s == "warn_missing_info") {
-            function(f) {
-              vars <- results[[s]][[f]]
-              paste0(
-                if (length(vars) > 20) {
-                  paste(prettyNum(length(vars), big.mark = ","), "variables")
-                } else {
-                  sub("}, ([^}]+)}$", "}, and \\1}", paste0(paste0("{.pkg ", vars, "}"), vapply(vars, function(m) {
-                    w <- meta_base == m
-                    if (any(w)) paste0(" (base matches {.emph ", names(meta)[which(w)[1]], "})") else ""
-                  }, ""), collapse = ", "))
-                },
-                " in {.field ", f, "}"
-              )
+        if (s == "warn_missing_info")
+          meta_base <- sub("^[^:]*:", "", names(meta))
+        missing_info <- unlist(
+          lapply(
+            names(results[[s]]),
+            if (s == "warn_missing_info") {
+              function(f) {
+                vars <- results[[s]][[f]]
+                paste0(
+                  if (length(vars) > 20) {
+                    paste(prettyNum(length(vars), big.mark = ","), "variables")
+                  } else {
+                    sub(
+                      "}, ([^}]+)}$",
+                      "}, and \\1}",
+                      paste0(
+                        paste0("{.pkg ", vars, "}"),
+                        vapply(
+                          vars,
+                          function(m) {
+                            w <- meta_base == m
+                            if (any(w))
+                              paste0(
+                                " (base matches {.emph ",
+                                names(meta)[which(w)[1]],
+                                "})"
+                              ) else ""
+                          },
+                          ""
+                        ),
+                        collapse = ", "
+                      )
+                    )
+                  },
+                  " in {.field ",
+                  f,
+                  "}"
+                )
+              }
+            } else {
+              function(f) {
+                vars <- results[[s]][[f]]
+                paste0(
+                  if (length(vars) > 20) {
+                    paste(prettyNum(length(vars), big.mark = ","), "variables")
+                  } else {
+                    paste0("{.pkg ", vars, "}", collapse = ", ")
+                  },
+                  " in {.field ",
+                  f,
+                  "}"
+                )
+              }
             }
-          } else {
-            function(f) {
-              vars <- results[[s]][[f]]
-              paste0(
-                if (length(vars) > 20) {
-                  paste(prettyNum(length(vars), big.mark = ","), "variables")
-                } else {
-                  paste0("{.pkg ", vars, "}", collapse = ", ")
-                }, " in {.field ", f, "}"
-              )
-            }
-          }
-        ), use.names = FALSE)
-        if (verbose) cli_bullets(structure(missing_info, names = rep(">", length(missing_info))))
+          ),
+          use.names = FALSE
+        )
+        if (verbose)
+          cli_bullets(structure(
+            missing_info,
+            names = rep(">", length(missing_info))
+          ))
       }
     }
   }
 
-  failures <- unique(unlist(results[grep("^fail_", names(results))], use.names = FALSE))
+  failures <- unique(unlist(
+    results[grep("^fail_", names(results))],
+    use.names = FALSE
+  ))
   n_fails <- length(failures)
   if (n_fails) {
     res_summary["FAIL"] <- n_fails
@@ -710,7 +957,9 @@ check_repository <- function(dir = ".", search_pattern = "\\.csv(?:\\.[gbx]z2?)?
     }
   }
 
-  res_summary["PASS"] <- sum(!files_short %in% c(results$not_considered, warnings, failures))
+  res_summary["PASS"] <- sum(
+    !files_short %in% c(results$not_considered, warnings, failures)
+  )
   results$summary <- res_summary
 
   if (verbose) {

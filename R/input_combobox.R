@@ -52,102 +52,224 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_combobox <- function(label, options, default = -1, display = options, id = label, ...,
-                           strict = TRUE, numeric = FALSE, search = TRUE, multi = FALSE, accordion = FALSE,
-                           clearable = FALSE, note = NULL, group_feature = NULL, variable = NULL, dataset = NULL,
-                           depends = NULL, dataview = NULL, subset = "filtered", selection_subset = "full_filter",
-                           filters = NULL, reset_button = FALSE, button_class = NULL, as.row = FALSE,
-                           floating_label = TRUE) {
+input_combobox <- function(
+  label,
+  options,
+  default = -1,
+  display = options,
+  id = label,
+  ...,
+  strict = TRUE,
+  numeric = FALSE,
+  search = TRUE,
+  multi = FALSE,
+  accordion = FALSE,
+  clearable = FALSE,
+  note = NULL,
+  group_feature = NULL,
+  variable = NULL,
+  dataset = NULL,
+  depends = NULL,
+  dataview = NULL,
+  subset = "filtered",
+  selection_subset = "full_filter",
+  filters = NULL,
+  reset_button = FALSE,
+  button_class = NULL,
+  as.row = FALSE,
+  floating_label = TRUE
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   if (as.row) floating_label <- FALSE
   r <- c(
     '<div class="wrapper combobox-wrapper">',
-    if (!floating_label) paste0('<label id="', id, '-label" for="', id, '-input">', label, "</label>"),
-    paste0('<div class="', paste(c(
-      if (reset_button) "input-group", if (floating_label) "form-floating"
-    ), collapse = " "), '">'),
+    if (!floating_label)
+      paste0(
+        '<label id="',
+        id,
+        '-label" for="',
+        id,
+        '-input">',
+        label,
+        "</label>"
+      ),
+    paste0(
+      '<div class="',
+      paste(
+        c(
+          if (reset_button) "input-group",
+          if (floating_label) "form-floating"
+        ),
+        collapse = " "
+      ),
+      '">'
+    ),
     paste0(
       '<div class="auto-input form-select combobox combobox-component" data-autoType="combobox"',
-      ' id="', id, '" ',
-      if (is.character(options) && length(options) == 1) paste0('data-optionSource="', options, '"'),
+      ' id="',
+      id,
+      '" ',
+      if (is.character(options) && length(options) == 1)
+        paste0('data-optionSource="', options, '"'),
       if (!is.null(default)) paste0(' data-default="', default, '"'),
       if (!is.null(note)) paste0(' aria-description="', note, '"'),
       if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
       if (!is.null(subset)) paste0(' data-subset="', subset, '"'),
-      if (!is.null(selection_subset)) paste0(' data-selectionsubset="', selection_subset, '"'),
+      if (!is.null(selection_subset))
+        paste0(' data-selectionsubset="', selection_subset, '"'),
       if (!is.null(depends)) paste0(' data-depends="', depends, '"'),
       if (!is.null(dataset)) paste0(' data-dataset="', dataset, '"'),
       if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+      if (length(a))
+        unlist(lapply(
+          seq_along(a),
+          function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+        )),
       '><div class="combobox-selection combobox-component">',
       '<span aria-live="assertive" aria-atomic="true" role="log" class="combobox-component"></span>',
       '<input class="combobox-input combobox-component" role="combobox" type="text" ',
-      'aria-expanded="false" aria-autocomplete="list" aria-controls="', id,
-      '-listbox" aria-controls="', id, '-listbox" id="', id, '-input" autocomplete="off"></div>',
-      if (clearable) '<button type="button" class="btn-close" title="clear selection"></button>',
+      'aria-expanded="false" aria-autocomplete="list" aria-controls="',
+      id,
+      '-listbox" aria-controls="',
+      id,
+      '-listbox" id="',
+      id,
+      '-input" autocomplete="off"></div>',
+      if (clearable)
+        '<button type="button" class="btn-close" title="clear selection"></button>',
       "</div>"
     ),
     paste0(
-      '<div class="combobox-options combobox-component', if (multi) " multi", '" role="listbox"',
-      ' id="', id, '-listbox" aria-labelledby="', id, '-label">'
+      '<div class="combobox-options combobox-component',
+      if (multi) " multi",
+      '" role="listbox"',
+      ' id="',
+      id,
+      '-listbox" aria-labelledby="',
+      id,
+      '-label">'
     ),
     if (is.list(options)) {
       i <- 0
       if (is.null(names(options))) names(options) <- seq_along(options)
       if (missing(accordion)) accordion <- TRUE
-      unlist(lapply(names(options), function(g) {
-        group <- paste0(
-          '<div class="combobox-group combobox-component',
-          if (accordion) " accordion-item",
-          '" data-group="', g, '">'
-        )
-        if (accordion) {
-          gid <- paste0(id, "_", gsub("[\\s,/._-]+", "", g))
-          group <- c(
-            group,
-            paste0('<div id="', gid, '-label" class="accordion-header combobox-component">'),
-            paste0(
-              '<button role="button" ',
-              'data-bs-toggle="collapse" data-bs-target="#', gid,
-              '" aria-expanded=false aria-controls="', gid,
-              '" class="accordion-button combobox-component collapsed">',
-              g, "</button></div>"
-            ),
-            paste0(
-              '<div id="', gid, '" class="combobox-component accordion-collapse collapse" ',
-              'data-group="', g, '" data-bs-parent="#', id,
-              '-listbox"><div class="accordion-body combobox-component">'
-            )
+      unlist(
+        lapply(names(options), function(g) {
+          group <- paste0(
+            '<div class="combobox-group combobox-component',
+            if (accordion) " accordion-item",
+            '" data-group="',
+            g,
+            '">'
           )
-        }
-        for (gi in seq_along(options[[g]])) {
-          i <<- i + 1
-          group <- c(group, paste0(
-            '<div class="combobox-option combobox-component', if (i == default) " selected", '" role="option" tabindex="0"',
-            ' data-group="', g, '" id="', id, "-option", i, '" data-value="', options[[g]][[gi]], '" aria-selected="',
-            if (i == default) "true" else "false", '">', display[[g]][[gi]], "</div>"
-          ))
-        }
-        c(group, "</div>", if (accordion) "</div></div>")
-      }), use.names = FALSE)
-    } else if (length(options) > 1 || !options %in% c("datasets", "variables", "ids", "palettes")) {
-      unlist(lapply(seq_along(options), function(i) {
-        paste0(
-          '<div class="combobox-component', if (i == default) " selected", '" role="option" tabindex="0"',
-          ' id="', id, "-option", i, '" data-value="', options[i], '" aria-selected="',
-          if (i == default) "true" else "false", '">', display[i], "</div>"
-        )
-      }), use.names = FALSE)
+          if (accordion) {
+            gid <- paste0(id, "_", gsub("[\\s,/._-]+", "", g))
+            group <- c(
+              group,
+              paste0(
+                '<div id="',
+                gid,
+                '-label" class="accordion-header combobox-component">'
+              ),
+              paste0(
+                '<button role="button" ',
+                'data-bs-toggle="collapse" data-bs-target="#',
+                gid,
+                '" aria-expanded=false aria-controls="',
+                gid,
+                '" class="accordion-button combobox-component collapsed">',
+                g,
+                "</button></div>"
+              ),
+              paste0(
+                '<div id="',
+                gid,
+                '" class="combobox-component accordion-collapse collapse" ',
+                'data-group="',
+                g,
+                '" data-bs-parent="#',
+                id,
+                '-listbox"><div class="accordion-body combobox-component">'
+              )
+            )
+          }
+          for (gi in seq_along(options[[g]])) {
+            i <<- i + 1
+            group <- c(
+              group,
+              paste0(
+                '<div class="combobox-option combobox-component',
+                if (i == default) " selected",
+                '" role="option" tabindex="0"',
+                ' data-group="',
+                g,
+                '" id="',
+                id,
+                "-option",
+                i,
+                '" data-value="',
+                options[[g]][[gi]],
+                '" aria-selected="',
+                if (i == default) "true" else "false",
+                '">',
+                display[[g]][[gi]],
+                "</div>"
+              )
+            )
+          }
+          c(group, "</div>", if (accordion) "</div></div>")
+        }),
+        use.names = FALSE
+      )
+    } else if (
+      length(options) > 1 ||
+        !options %in% c("datasets", "variables", "ids", "palettes")
+    ) {
+      unlist(
+        lapply(seq_along(options), function(i) {
+          paste0(
+            '<div class="combobox-component',
+            if (i == default) " selected",
+            '" role="option" tabindex="0"',
+            ' id="',
+            id,
+            "-option",
+            i,
+            '" data-value="',
+            options[i],
+            '" aria-selected="',
+            if (i == default) "true" else "false",
+            '">',
+            display[i],
+            "</div>"
+          )
+        }),
+        use.names = FALSE
+      )
     },
     "</div>",
-    if (floating_label) paste0('<label id="', id, '-label" for="', id, '-input">', label, "</label>"),
+    if (floating_label)
+      paste0(
+        '<label id="',
+        id,
+        '-label" for="',
+        id,
+        '-input">',
+        label,
+        "</label>"
+      ),
     if (!missing(reset_button)) {
-      paste(c(
-        '<button type="button" class="btn btn-link', if (!is.null(button_class)) paste("", button_class), ' select-reset">',
-        if (is.character(reset_button)) reset_button else "Reset",
-        "</button>"
-      ), collapse = "")
+      paste(
+        c(
+          '<button type="button" class="btn btn-link',
+          if (!is.null(button_class)) paste("", button_class),
+          ' select-reset">',
+          if (is.character(reset_button)) reset_button else "Reset",
+          "</button>"
+        ),
+        collapse = ""
+      )
     },
     "</div>",
     "</div>"
@@ -155,12 +277,17 @@ input_combobox <- function(label, options, default = -1, display = options, id =
   if (missing(accordion) && !is.null(group_feature)) accordion <- TRUE
   if (as.row) r <- to_input_row(r)
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     if (strict) caller$combobox[[id]]$strict <- strict
     if (numeric) caller$combobox[[id]]$numeric <- numeric
     if (search) caller$combobox[[id]]$search <- search
     if (multi) caller$combobox[[id]]$multi <- multi
-    if (accordion) caller$combobox[[id]]$accordion <- accordion && (is.list(options) || !is.null(group_feature))
+    if (accordion)
+      caller$combobox[[id]]$accordion <- accordion &&
+        (is.list(options) || !is.null(group_feature))
     if (!is.null(group_feature)) caller$combobox[[id]]$group <- group_feature
     if (!is.null(filters)) caller$combobox[[id]]$filters <- as.list(filters)
     caller$content <- c(caller$content, r)

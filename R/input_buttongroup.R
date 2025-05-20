@@ -23,10 +23,22 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_buttongroup <- function(label, options, default = 0, display = options, id = label, ..., button_class = NULL,
-                              variable = NULL, dataset = NULL, depends = NULL) {
+input_buttongroup <- function(
+  label,
+  options,
+  default = 0,
+  display = options,
+  id = label,
+  ...,
+  button_class = NULL,
+  variable = NULL,
+  dataset = NULL,
+  depends = NULL
+) {
   if (!is.character(options) && is.character(default)) {
-    default <- which((if (default %in% display) display else options) == default)
+    default <- which(
+      (if (default %in% display) display else options) == default
+    )
   }
   id <- gsub("\\s", "", id)
   a <- list(...)
@@ -34,35 +46,63 @@ input_buttongroup <- function(label, options, default = 0, display = options, id
     '<div class="wrapper buttongroup-wrapper">',
     paste0('<label for="', id, '">', label, "</label>"),
     paste0(
-      '<div class="auto-input btn-group" role="group" data-autoType="buttongroup" id="', id, '" ',
-      if (is.character(options) && length(options) == 1) paste0('data-optionSource="', options, '"'),
+      '<div class="auto-input btn-group" role="group" data-autoType="buttongroup" id="',
+      id,
+      '" ',
+      if (is.character(options) && length(options) == 1)
+        paste0('data-optionSource="', options, '"'),
       if (!is.null(default)) paste0(' data-default="', default, '"'),
       if (!is.null(depends)) paste0(' data-depends="', depends, '"'),
       if (!is.null(dataset)) paste0(' data-dataset="', dataset, '"'),
       if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+      if (length(a))
+        unlist(lapply(
+          seq_along(a),
+          function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+        )),
       ">"
     ),
     if (length(options) > 1) {
-      unlist(lapply(seq_along(options), function(i) {
-        c(
-          paste0(
-            '<input type="radio" class="btn-check" autocomplete="off" name="',
-            id, '_options" id="', id, "_option", i, '" value="',
-            options[i], '"', if (i == default) " checked", ">"
-          ),
-          paste0(
-            '<label class="btn', if (!is.null(button_class)) paste("", button_class),
-            '" for="', id, "_option", i, '">', display[i], "</label>"
+      unlist(
+        lapply(seq_along(options), function(i) {
+          c(
+            paste0(
+              '<input type="radio" class="btn-check" autocomplete="off" name="',
+              id,
+              '_options" id="',
+              id,
+              "_option",
+              i,
+              '" value="',
+              options[i],
+              '"',
+              if (i == default) " checked",
+              ">"
+            ),
+            paste0(
+              '<label class="btn',
+              if (!is.null(button_class)) paste("", button_class),
+              '" for="',
+              id,
+              "_option",
+              i,
+              '">',
+              display[i],
+              "</label>"
+            )
           )
-        )
-      }), use.names = FALSE)
+        }),
+        use.names = FALSE
+      )
     },
     "</div>",
     "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$content <- c(caller$content, r)
   }
   r

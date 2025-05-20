@@ -7,8 +7,14 @@ page_text("Motor Trend Car Road Tests", tag = "h1", class = "text-center")
 
 # use `input_` functions to add input elements that affect outputs:
 page_menu(
-  input_select("Select a Variable", options = "variables", label = "variable", default = "wt"),
-  position = "top", default_open = TRUE
+  input_select(
+    "Select a Variable",
+    options = "variables",
+    label = "variable",
+    default = "wt"
+  ),
+  position = "top",
+  default_open = TRUE
 )
 
 # use `output_` functions to data display components:
@@ -20,6 +26,8 @@ page_section(
 
 # add a tooltip
 output_info(
-  body = c("variables.short_name" = "value"), row_style = "stack",
-  subto = "main_plot", floating = TRUE
+  body = c("variables.short_name" = "value"),
+  row_style = "stack",
+  subto = "main_plot",
+  floating = TRUE
 )

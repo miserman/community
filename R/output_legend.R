@@ -20,10 +20,19 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-output_legend <- function(palette = "", variable = NULL, dataview = NULL, id = NULL,
-                          click = NULL, subto = NULL, class = "", show_na = TRUE) {
+output_legend <- function(
+  palette = "",
+  variable = NULL,
+  dataview = NULL,
+  id = NULL,
+  click = NULL,
+  subto = NULL,
+  class = "",
+  show_na = TRUE
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   if (is.null(id)) id <- paste0("legend", caller$uid)
   r <- c(
     if (show_na) {
@@ -36,14 +45,20 @@ output_legend <- function(palette = "", variable = NULL, dataview = NULL, id = N
         "</div>"
       )
     },
-    paste(c(
-      '<div id="', id, '" data-autoType="legend" class="auto-output legend',
-      if (class != "") c(" ", class), '"',
-      if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
-      if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
-      if (!is.null(click)) paste0(' data-click="', click, '"'),
-      ">"
-    ), collapse = ""),
+    paste(
+      c(
+        '<div id="',
+        id,
+        '" data-autoType="legend" class="auto-output legend',
+        if (class != "") c(" ", class),
+        '"',
+        if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
+        if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
+        if (!is.null(click)) paste0(' data-click="', click, '"'),
+        ">"
+      ),
+      collapse = ""
+    ),
     '<div class="legend-ticks"></div>',
     '<div class="legend-scale"></div>',
     '<div class="legend-summary"></div>',

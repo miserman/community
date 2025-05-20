@@ -38,10 +38,22 @@
 #' @return A list of the entered options.
 #' @export
 
-input_dataview <- function(id = NULL, y = NULL, x = NULL, time = NULL, time_agg = "last", time_filters = list(),
-                           dataset = NULL, ids = NULL, features = NULL, variables = NULL, palette = "") {
+input_dataview <- function(
+  id = NULL,
+  y = NULL,
+  x = NULL,
+  time = NULL,
+  time_agg = "last",
+  time_filters = list(),
+  dataset = NULL,
+  ids = NULL,
+  features = NULL,
+  variables = NULL,
+  palette = ""
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   r <- list(palette = tolower(palette))
   if (!is.null(y)) r$y <- y
   if (!is.null(x)) r$x <- x
@@ -51,9 +63,12 @@ input_dataview <- function(id = NULL, y = NULL, x = NULL, time = NULL, time_agg 
   if (!is.null(dataset)) r$dataset <- dataset
   if (!is.null(ids)) r$ids <- ids
   if (!is.null(features)) r$features <- as.list(features)
-  if (!is.null(variables)) r$variables <- if (!is.list(variables[[1]])) list(variables) else variables
+  if (!is.null(variables))
+    r$variables <- if (!is.list(variables[[1]])) list(variables) else variables
   if (length(r) && building) {
-    caller$dataviews[[if (is.null(id)) paste0("view", length(caller$dataviews)) else id]] <- r
+    caller$dataviews[[
+      if (is.null(id)) paste0("view", length(caller$dataviews)) else id
+    ]] <- r
   }
   r
 }

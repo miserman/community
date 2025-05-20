@@ -1,5 +1,11 @@
 url: https://miserman.github.io/community
 
+template:
+  bootstrap: 5
+  params:
+    bootswatch: flatly
+  light-switch: true
+
 navbar:
   components:
     articles:
@@ -17,12 +23,6 @@ navbar:
           href: articles/developer-course.html
         - text: Alan Notes
           href: articles/anti-patterns.html
-
-template:
-  bootstrap: 5
-  params:
-    bootswatch: flatly
-  light-switch: true
 
 authors:
   Biocomplexity Institute:

@@ -40,8 +40,9 @@ check_template <- function(template, name = "", dir = ".", spec = NULL) {
   )
   if (is.null(spec)) {
     path <- paste0(
-      path.package("community"),
-      if (file.exists(paste0(path.package("community"), "/inst"))) "/inst",
+      system.file(package = "community"),
+      if (file.exists(paste0(system.file(package = "community"), "/inst")))
+        "/inst",
       "/specs/",
       sub(".json", "", template, fixed = TRUE),
       ".json"
@@ -57,38 +58,63 @@ check_template <- function(template, name = "", dir = ".", spec = NULL) {
   if (missing(name)) {
     name <- spec$name
   }
-  strict <- vapply(spec$files, function(f) is.character(f) && length(f) == 1, TRUE)
+  strict <- vapply(
+    spec$files,
+    function(f) is.character(f) && length(f) == 1,
+    TRUE
+  )
   dir <- paste0(normalizePath(paste0(dir, "/", spec$dir), "/", FALSE), "/")
   report$dir <- dir
   report$status["dir"] <- dir.exists(dir)
   if (spec$context != spec$name) {
     check_context <- check_template(spec$context, dir = dir)
-    if (!check_context$exists) cli_abort(c("context {spec$context} check failed for {name}:", check_context$message))
+    if (!check_context$exists)
+      cli_abort(c(
+        "context {spec$context} check failed for {name}:",
+        check_context$message
+      ))
   }
   if (!report$status["dir"]) {
-    report$message <- c(x = paste0(
-      "the required directory ({.path ",
-      spec$dir,
-      "}) is not present in {.path ",
-      normalizePath(dir, "/", FALSE),
-      "}"
-    ))
+    report$message <- c(
+      x = paste0(
+        "the required directory ({.path ",
+        spec$dir,
+        "}) is not present in {.path ",
+        normalizePath(dir, "/", FALSE),
+        "}"
+      )
+    )
   }
   if (any(strict)) {
-    files <- gsub("{name}", name, paste0(dir, unlist(spec$files[strict])), fixed = TRUE)
+    files <- gsub(
+      "{name}",
+      name,
+      paste0(dir, unlist(spec$files[strict])),
+      fixed = TRUE
+    )
     report$files <- files
     present <- file.exists(files)
     report$status["strict"] <- all(present)
     if (!report$status["strict"]) {
-      report$message <- c(report$message, x = paste0(
-        "required file",
-        if (sum(!present) == 1) " is" else "s are",
-        " not present: ",
-        paste0("{.path ", files[!present], "}", collapse = ", ")
-      ))
+      report$message <- c(
+        report$message,
+        x = paste0(
+          "required file",
+          if (sum(!present) == 1) " is" else "s are",
+          " not present: ",
+          paste0("{.path ", files[!present], "}", collapse = ", ")
+        )
+      )
     } else {
       for (f in files[present]) {
-        if (!dir.exists(f) && grepl("<template:", paste(readLines(f, warn = FALSE), collapse = ""), fixed = TRUE)) {
+        if (
+          !dir.exists(f) &&
+            grepl(
+              "<template:",
+              paste(readLines(f, warn = FALSE), collapse = ""),
+              fixed = TRUE
+            )
+        ) {
           report$incomplete <- c(report$incomplete, f)
         }
       }
@@ -97,36 +123,64 @@ check_template <- function(template, name = "", dir = ".", spec = NULL) {
   if (any(!strict)) {
     file_set <- spec$files[!strict][[1]]
     if (length(file_set) == 1) {
-      files <- gsub("{name}", spec$name, paste0(dir, file_set[[1]]), fixed = TRUE)
+      files <- gsub(
+        "{name}",
+        spec$name,
+        paste0(dir, file_set[[1]]),
+        fixed = TRUE
+      )
       report$files <- c(report$files, files)
       present <- file.exists(files)
       report$status["set"] <- any(present)
       if (!report$status["set"]) {
-        report$message <- c(report$message, x = paste(
-          "one of these files is required, but none were present:",
-          paste(files, collapse = ", ")
-        ))
+        report$message <- c(
+          report$message,
+          x = paste(
+            "one of these files is required, but none were present:",
+            paste(files, collapse = ", ")
+          )
+        )
       } else {
         for (f in files[present]) {
-          if (!dir.exists(f) && grepl("<template:", paste(readLines(f, warn = FALSE), collapse = ""), fixed = TRUE)) {
+          if (
+            !dir.exists(f) &&
+              grepl(
+                "<template:",
+                paste(readLines(f, warn = FALSE), collapse = ""),
+                fixed = TRUE
+              )
+          ) {
             report$incomplete <- c(report$incomplete, f)
           }
         }
       }
     } else {
-      file_set <- lapply(file_set, function(fl) gsub("{name}", spec$name, paste0(dir, fl), fixed = TRUE))
+      file_set <- lapply(
+        file_set,
+        function(fl) gsub("{name}", spec$name, paste0(dir, fl), fixed = TRUE)
+      )
       report$files <- c(report$files, unlist(file_set))
       present <- vapply(file_set, function(fl) all(file.exists(fl)), TRUE)
       report$status["set"] <- any(present)
       if (!report$status["set"]) {
-        report$message <- c(report$message, paste(
-          x = "none of the required file sets were complete:",
-          file_set
-        ))
+        report$message <- c(
+          report$message,
+          paste(
+            x = "none of the required file sets were complete:",
+            file_set
+          )
+        )
       } else {
         for (fl in file_set[present]) {
           for (f in fl) {
-            if (!dir.exists(f) && grepl("<template:", paste(readLines(f, warn = FALSE), collapse = ""), fixed = TRUE)) {
+            if (
+              !dir.exists(f) &&
+                grepl(
+                  "<template:",
+                  paste(readLines(f, warn = FALSE), collapse = ""),
+                  fixed = TRUE
+                )
+            ) {
               report$incomplete <- c(report$incomplete, f)
             }
           }

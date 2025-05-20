@@ -39,17 +39,30 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-output_map <- function(shapes = NULL, overlays = NULL, color = NULL, color_time = NULL, dataview = NULL,
-                       id = NULL, click = NULL, subto = NULL, background_shapes = NULL,
-                       options = list(), overlays_from_measures = TRUE, tiles = list(
-                         url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                         options = list(maxZoom = 19)
-                       ), attribution = list(
-                         name = "OpenStreetMap",
-                         url = "https://www.openstreetmap.org/copyright"
-                       )) {
+output_map <- function(
+  shapes = NULL,
+  overlays = NULL,
+  color = NULL,
+  color_time = NULL,
+  dataview = NULL,
+  id = NULL,
+  click = NULL,
+  subto = NULL,
+  background_shapes = NULL,
+  options = list(),
+  overlays_from_measures = TRUE,
+  tiles = list(
+    url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    options = list(maxZoom = 19)
+  ),
+  attribution = list(
+    name = "OpenStreetMap",
+    url = "https://www.openstreetmap.org/copyright"
+  )
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   if (is.null(id)) id <- paste0("map", caller$uid)
   if (building) {
     caller$dependencies$leaflet_style <- list(
@@ -63,13 +76,17 @@ output_map <- function(shapes = NULL, overlays = NULL, color = NULL, color_time 
       hash = "sha384-u5N8qJeJOO2iqNjIKTdl6KeKsEikMAmCUBPc6sC6uGpgL34aPJ4VgNhuhumedpEk"
     )
     options$overlays_from_measures <- overlays_from_measures
-    options$subto <- if (!is.null(subto) && length(subto) == 1) list(subto) else subto
+    options$subto <- if (!is.null(subto) && length(subto) == 1) list(subto) else
+      subto
     if (is.null(options[["center"]])) options$center <- c(40, -95)
     if (is.null(options[["zoom"]])) options$zoom <- 4
-    if (!is.null(background_shapes) && is.null(options[["background_shapes"]])) {
+    if (
+      !is.null(background_shapes) && is.null(options[["background_shapes"]])
+    ) {
       options$background_shapes <- background_shapes
     }
-    if (is.character(shapes)) shapes <- lapply(shapes, function(s) list(url = s))
+    if (is.character(shapes))
+      shapes <- lapply(shapes, function(s) list(url = s))
     if (is.list(shapes) && !is.list(shapes[[1]])) shapes <- list(shapes)
     snames <- names(shapes)
     for (i in seq_along(shapes)) {
@@ -77,26 +94,37 @@ output_map <- function(shapes = NULL, overlays = NULL, color = NULL, color_time 
       if (is.null(shapes[[i]]$id_property)) shapes[[i]]$id_property <- "geoid"
     }
     if (!is.null(overlays)) {
-      if (is.character(overlays)) overlays <- lapply(overlays, function(s) list(url = s))
-      if (is.list(overlays) && !is.list(overlays[[1]])) overlays <- list(overlays)
+      if (is.character(overlays))
+        overlays <- lapply(overlays, function(s) list(url = s))
+      if (is.list(overlays) && !is.list(overlays[[1]]))
+        overlays <- list(overlays)
       snames <- names(overlays)
       for (i in seq_along(overlays)) {
         if (!is.null(snames[i])) overlays[[i]]$name <- snames[i]
       }
     }
-    caller$map[[id]] <- Filter(length, list(
-      shapes = unname(shapes), overlays = unname(overlays), options = options, tiles = tiles
-    ))
+    caller$map[[id]] <- Filter(
+      length,
+      list(
+        shapes = unname(shapes),
+        overlays = unname(overlays),
+        options = options,
+        tiles = tiles
+      )
+    )
   }
-  r <- paste(c(
-    '<div class="auto-output leaflet"',
-    if (!is.null(dataview)) paste0('data-view="', dataview, '"'),
-    if (!is.null(click)) paste0('data-click="', click, '"'),
-    if (!is.null(color)) paste0('data-color="', color, '"'),
-    if (!is.null(color_time)) paste0('data-colorTime="', color_time, '"'),
-    paste0('id="', id, '"'),
-    'data-autoType="map"></div>'
-  ), collapse = " ")
+  r <- paste(
+    c(
+      '<div class="auto-output leaflet"',
+      if (!is.null(dataview)) paste0('data-view="', dataview, '"'),
+      if (!is.null(click)) paste0('data-click="', click, '"'),
+      if (!is.null(color)) paste0('data-color="', color, '"'),
+      if (!is.null(color_time)) paste0('data-colorTime="', color_time, '"'),
+      paste0('id="', id, '"'),
+      'data-autoType="map"></div>'
+    ),
+    collapse = " "
+  )
   if (building) {
     caller$content <- c(caller$content, r)
     caller$credits$leaflet <- list(

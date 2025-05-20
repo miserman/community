@@ -26,9 +26,17 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_navbar <- function(..., title = "", logo = "", breakpoint = "md", logo.height = "24px", logo.width = "24px") {
+page_navbar <- function(
+  ...,
+  title = "",
+  logo = "",
+  breakpoint = "md",
+  logo.height = "24px",
+  logo.width = "24px"
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   submenus <- substitute(...())
@@ -39,7 +47,13 @@ page_navbar <- function(..., title = "", logo = "", breakpoint = "md", logo.heig
     '<div class="container-fluid">',
     if (!missing(logo)) {
       paste0(
-        '<span class="navbar-brand"><img alt="site logo" height=', logo.height, " width=", logo.width, ' src="', logo, '">'
+        '<span class="navbar-brand"><img alt="site logo" height=',
+        logo.height,
+        " width=",
+        logo.width,
+        ' src="',
+        logo,
+        '">'
       )
     },
     if (!missing(title)) paste0("<span>", title, "</span>"),
@@ -61,54 +75,98 @@ page_navbar <- function(..., title = "", logo = "", breakpoint = "md", logo.heig
     )
     for (i in seq_len(n)) {
       if (submenus[[i]][[1]] == "list") {
-        if (is.null(names(submenus[[i]]))) submenus[[i]] <- list(items = submenus[[i]])
-        id <- if (is.null(submenus[[i]]$id)) paste0("submenu", parts$uid, i) else submenus[[i]]$id
-        if (is.null(submenus[[i]]$name)) submenus[[i]]$name <- if (!is.null(names(submenus))) names(submenus)[i] else "Menu"
-        r <- c(r, paste0(
-          '<li class="nav-item">',
-          '<button class="btn btn-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#',
-          id, '" aria-controls="', id, '">', submenus[[i]]$name, "</button>",
-          "</li>"
-        ))
+        if (is.null(names(submenus[[i]])))
+          submenus[[i]] <- list(items = submenus[[i]])
+        id <- if (is.null(submenus[[i]]$id))
+          paste0("submenu", parts$uid, i) else submenus[[i]]$id
+        if (is.null(submenus[[i]]$name))
+          submenus[[i]]$name <- if (!is.null(names(submenus)))
+            names(submenus)[i] else "Menu"
+        r <- c(
+          r,
+          paste0(
+            '<li class="nav-item">',
+            '<button class="btn btn-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#',
+            id,
+            '" aria-controls="',
+            id,
+            '">',
+            submenus[[i]]$name,
+            "</button>",
+            "</li>"
+          )
+        )
         has_foot <- !is.null(submenus[[i]]$foot)
         menus <- c(
           menus,
-          paste(c(
-            '<div tabindex="-1" id="', id, '" aria-labelledby="', id, '_label" class="offcanvas offcanvas-',
-            if (is.null(submenus[[i]]$placement)) "end" else submenus[[i]]$placement,
-            if (!is.null(submenus[[i]]$class)) paste("", submenus[[i]]$class),
-            if (!is.null(submenus[[i]]$backdrop)) c('" data-bs-backdrop="', submenus[[i]]$backdrop),
-            '">'
-          ), collapse = ""),
+          paste(
+            c(
+              '<div tabindex="-1" id="',
+              id,
+              '" aria-labelledby="',
+              id,
+              '_label" class="offcanvas offcanvas-',
+              if (is.null(submenus[[i]]$placement)) "end" else
+                submenus[[i]]$placement,
+              if (!is.null(submenus[[i]]$class)) paste("", submenus[[i]]$class),
+              if (!is.null(submenus[[i]]$backdrop))
+                c('" data-bs-backdrop="', submenus[[i]]$backdrop),
+              '">'
+            ),
+            collapse = ""
+          ),
           '<div class="offcanvas-header">',
           paste0(
-            '<h5 class="offcanvas-title" id="', id, '_label">',
-            submenus[[i]][if (is.null(submenus[[i]]$title)) "name" else "title"],
+            '<h5 class="offcanvas-title" id="',
+            id,
+            '_label">',
+            submenus[[i]][
+              if (is.null(submenus[[i]]$title)) "name" else "title"
+            ],
             "</h5>"
           ),
           '<button class="btn-close text-reset" type="button" data-bs-dismiss="offcanvas" title="Close"></button>',
           "</div>",
-          paste0('<div class="offcanvas-body"', if (has_foot) ' style="bottom: 46px"', ">"),
-          unlist(lapply(submenus[[i]]$items[-1], eval, parts), use.names = FALSE),
+          paste0(
+            '<div class="offcanvas-body"',
+            if (has_foot) ' style="bottom: 46px"',
+            ">"
+          ),
+          unlist(
+            lapply(submenus[[i]]$items[-1], eval, parts),
+            use.names = FALSE
+          ),
           "</div>",
           if (has_foot) {
             c(
               '<div class="offcanvas-footer">',
-              unlist(lapply(submenus[[i]]$foot[-1], eval, parts), use.names = FALSE),
+              unlist(
+                lapply(submenus[[i]]$foot[-1], eval, parts),
+                use.names = FALSE
+              ),
               "</div>"
             )
           },
           "</div>"
         )
       } else {
-        r <- c(r, paste0('<li class="nav-item">', paste(eval(submenus[[i]]), collapse = ""), "</li>"))
+        r <- c(
+          r,
+          paste0(
+            '<li class="nav-item">',
+            paste(eval(submenus[[i]]), collapse = ""),
+            "</li>"
+          )
+        )
       }
     }
   }
   r <- c(r, "</ul></div></div></nav>", menus)
   if (building) {
     caller$header <- r
-    for (n in names(parts)) if (n != "content" && n != "uid") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content" && n != "uid")
+        caller[[n]] <- c(caller[[n]], parts[[n]])
     caller$uid <- parts$uid + 1
   }
   r

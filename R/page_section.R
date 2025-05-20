@@ -27,9 +27,18 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_section <- function(..., type = "row", wraps = NA, sizes = NA, breakpoints = NA, conditions = "", id = NULL) {
+page_section <- function(
+  ...,
+  type = "row",
+  wraps = NA,
+  sizes = NA,
+  breakpoints = NA,
+  conditions = "",
+  id = NULL
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   parts$uid <- caller$uid
@@ -41,29 +50,46 @@ page_section <- function(..., type = "row", wraps = NA, sizes = NA, breakpoints 
   conditions <- rep_len(conditions, n)
   ids <- paste0("sec", parts$uid, seq_len(n))
   r <- c(
-    paste(c(
-      "<div", if (!is.null(id)) c(' id="', id, '"'), if (!is.null(type)) c(' class="', type, '"'), ">"
-    ), collapse = ""),
-    unlist(lapply(seq_len(n), function(i) {
-      wrap <- !is.na(wraps[i]) || conditions[i] != ""
+    paste(
       c(
-        if (wrap) {
-          paste(c(
-            '<div class="', if (is.na(wraps[i])) "" else wraps[i],
-            if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
-            if (!is.na(sizes[i])) c("-", sizes[i]),
-            '"', if (conditions[i] != "") paste0(' id="', ids[i], '"'), ">"
-          ), collapse = "")
-        },
-        eval(elements[[i]], parts, caller),
-        if (wrap) "</div>"
-      )
-    }), use.names = FALSE),
+        "<div",
+        if (!is.null(id)) c(' id="', id, '"'),
+        if (!is.null(type)) c(' class="', type, '"'),
+        ">"
+      ),
+      collapse = ""
+    ),
+    unlist(
+      lapply(seq_len(n), function(i) {
+        wrap <- !is.na(wraps[i]) || conditions[i] != ""
+        c(
+          if (wrap) {
+            paste(
+              c(
+                '<div class="',
+                if (is.na(wraps[i])) "" else wraps[i],
+                if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
+                if (!is.na(sizes[i])) c("-", sizes[i]),
+                '"',
+                if (conditions[i] != "") paste0(' id="', ids[i], '"'),
+                ">"
+              ),
+              collapse = ""
+            )
+          },
+          eval(elements[[i]], parts, caller),
+          if (wrap) "</div>"
+        )
+      }),
+      use.names = FALSE
+    ),
     "</div>"
   )
   if (building) {
     caller$content <- c(caller$content, r)
-    for (n in names(parts)) if (n != "content" && n != "uid") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content" && n != "uid")
+        caller[[n]] <- c(caller[[n]], parts[[n]])
     process_conditions(conditions, ids, caller)
     caller$uid <- parts$uid + 1
   }

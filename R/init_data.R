@@ -20,11 +20,21 @@
 #' @seealso Add basic information about a dataset with \code{\link{data_add}}.
 #' @export
 
-init_data <- function(name, title = name, dir = ".", ..., write = TRUE, overwrite = FALSE, quiet = !interactive()) {
+init_data <- function(
+  name,
+  title = name,
+  dir = ".",
+  ...,
+  write = TRUE,
+  overwrite = FALSE,
+  quiet = !interactive()
+) {
   if (missing(name)) cli_abort("{.arg name} must be specified")
   package <- list(
     name = name,
-    title = if (title == name) gsub("\\b(\\w)", "\\U\\1", gsub("[._/-]", " ", name), perl = TRUE) else title,
+    title = if (title == name)
+      gsub("\\b(\\w)", "\\U\\1", gsub("[._/-]", " ", name), perl = TRUE) else
+      title,
     licence = list(
       url = "http://opendatacommons.org/licenses/pddl",
       name = "Open Data Commons Public Domain",
@@ -35,14 +45,27 @@ init_data <- function(name, title = name, dir = ".", ..., write = TRUE, overwrit
   )
   package_path <- normalizePath(paste0(dir, "/datapackage.json"), "/", FALSE)
   if (write && !overwrite && file.exists(package_path)) {
-    cli_abort(c("datapackage ({.path {package_path}}) already exists", i = "add {.code overwrite = TRUE} to overwrite it"))
+    cli_abort(c(
+      "datapackage ({.path {package_path}}) already exists",
+      i = "add {.code overwrite = TRUE} to overwrite it"
+    ))
   }
-  if (length(list(...))) package$resources <- data_add(..., dir = dir, write = FALSE)
+  if (length(list(...)))
+    package$resources <- data_add(..., dir = dir, write = FALSE)
   if (write) {
     if (!dir.exists(dir)) dir.create(dir, recursive = TRUE)
-    jsonlite::write_json(package, package_path, auto_unbox = TRUE, digits = 6, pretty = TRUE)
+    jsonlite::write_json(
+      package,
+      package_path,
+      auto_unbox = TRUE,
+      digits = 6,
+      pretty = TRUE
+    )
     if (!quiet) {
-      cli_bullets(c(v = "created metadata template for {name}:", "*" = paste0("{.path ", package_path, "}")))
+      cli_bullets(c(
+        v = "created metadata template for {name}:",
+        "*" = paste0("{.path ", package_path, "}")
+      ))
       navigateToFile(package_path)
     }
   }

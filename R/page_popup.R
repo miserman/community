@@ -26,10 +26,20 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_popup <- function(text = "Popup", ..., title = text, footer = NULL, wraps = NA, sizes = NA,
-                       breakpoints = NA, conditions = "", id = NULL) {
+page_popup <- function(
+  text = "Popup",
+  ...,
+  title = text,
+  footer = NULL,
+  wraps = NA,
+  sizes = NA,
+  breakpoints = NA,
+  conditions = "",
+  id = NULL
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   parts$uid <- caller$uid
@@ -42,40 +52,60 @@ page_popup <- function(text = "Popup", ..., title = text, footer = NULL, wraps =
   ids <- paste0("modal", parts$uid, seq_len(n))
   r <- paste0(
     '<button type="button" class="btn popup-button" data-bs-toggle="modal" data-bs-target="#dialog',
-    parts$uid, '"', if (!is.null(id)) paste0(' id="', id, '"'), ">", text, "</button>"
+    parts$uid,
+    '"',
+    if (!is.null(id)) paste0(' id="', id, '"'),
+    ">",
+    text,
+    "</button>"
   )
   b <- c(
     paste0(
-      '<div class="modal" tabindex="-1" id="dialog', parts$uid,
+      '<div class="modal" tabindex="-1" id="dialog',
+      parts$uid,
       '"><div class="modal-dialog"><div class="modal-content">'
     ),
     paste0(
-      '<div class="modal-header"><div class="modal-title">', paste(title, collapse = ""), "</div>",
+      '<div class="modal-header"><div class="modal-title">',
+      paste(title, collapse = ""),
+      "</div>",
       '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>',
       "</div>"
     ),
     '<div class="modal-body">',
-    unlist(lapply(seq_len(n), function(i) {
-      c(
-        if (!is.na(wraps[i]) || conditions[i] != "") {
-          paste(c(
-            '<div class="', if (is.na(wraps[i])) "" else wraps[i],
-            if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
-            if (!is.na(sizes[i])) c("-", sizes[i]),
-            '"', if (conditions[i] != "") c(' id="', ids[i], '"'), ">"
-          ), collapse = "")
-        },
-        eval(elements[[i]], parts),
-        if (!is.na(wraps[i])) "</div>"
-      )
-    }), use.names = FALSE),
+    unlist(
+      lapply(seq_len(n), function(i) {
+        c(
+          if (!is.na(wraps[i]) || conditions[i] != "") {
+            paste(
+              c(
+                '<div class="',
+                if (is.na(wraps[i])) "" else wraps[i],
+                if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
+                if (!is.na(sizes[i])) c("-", sizes[i]),
+                '"',
+                if (conditions[i] != "") c(' id="', ids[i], '"'),
+                ">"
+              ),
+              collapse = ""
+            )
+          },
+          eval(elements[[i]], parts),
+          if (!is.na(wraps[i])) "</div>"
+        )
+      }),
+      use.names = FALSE
+    ),
     "</div>",
     if (!is.null(footer)) {
       c(
         '<div class="modal-footer">',
-        unlist(lapply(footer, function(e) {
-          eval(e, parts, caller)
-        }), use.names = FALSE),
+        unlist(
+          lapply(footer, function(e) {
+            eval(e, parts, caller)
+          }),
+          use.names = FALSE
+        ),
         "</div>"
       )
     },
@@ -84,7 +114,9 @@ page_popup <- function(text = "Popup", ..., title = text, footer = NULL, wraps =
   if (building) {
     caller$body <- c(caller$body, b)
     caller$content <- c(caller$content, r)
-    for (n in names(parts)) if (n != "content" && n != "uid") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content" && n != "uid")
+        caller[[n]] <- c(caller[[n]], parts[[n]])
     process_conditions(conditions, ids, caller)
     caller$uid <- parts$uid + 1
   }

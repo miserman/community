@@ -31,7 +31,14 @@
 #' and invisibly returns its path.
 #' @export
 
-init_template <- function(name, files, dir = ".", spec_dir = ".", context = name, overwrite = FALSE) {
+init_template <- function(
+  name,
+  files,
+  dir = ".",
+  spec_dir = ".",
+  context = name,
+  overwrite = FALSE
+) {
   if (missing(name)) cli_abort("{.arg name} must be specified")
   if (missing(files)) cli_abort("{.arg files} must be specified")
   name <- sub("^init_", "", name)
@@ -46,29 +53,52 @@ init_template <- function(name, files, dir = ".", spec_dir = ".", context = name
   template_test <- file.exists(test_path)
   init_function(paste0("init_", name), dir = dir, overwrite = overwrite)
   if (overwrite || !template_test) {
-    writeLines(paste0(
-      "test_that(\"check_template passes\", {",
-      "\n  dir <- tempdir(TRUE)",
-      "\n  on.exit(unlink(dir, TRUE, TRUE))",
-      if (spec$name != spec$context) {
-        paste0("\n  init_", spec$context, "(\"test_context\", dir = dir)\n  dir <- paste0(dir, \"/test_context\")")
-      },
-      "\n  init_", name, "(\"test_", name, "\", dir = dir)",
-      "\n  expect_true(check_template(\"", name, "\", \"test_", name, "\", dir = dir)$exists)",
-      "\n})",
-      sep = ""
-    ), test_path)
+    writeLines(
+      paste0(
+        "test_that(\"check_template passes\", {",
+        "\n  dir <- tempdir(TRUE)",
+        "\n  on.exit(unlink(dir, TRUE, TRUE))",
+        if (spec$name != spec$context) {
+          paste0(
+            "\n  init_",
+            spec$context,
+            "(\"test_context\", dir = dir)\n  dir <- paste0(dir, \"/test_context\")"
+          )
+        },
+        "\n  init_",
+        name,
+        "(\"test_",
+        name,
+        "\", dir = dir)",
+        "\n  expect_true(check_template(\"",
+        name,
+        "\", \"test_",
+        name,
+        "\", dir = dir)$exists)",
+        "\n})",
+        sep = ""
+      ),
+      test_path
+    )
   }
-  path <- normalizePath(paste0(
-    dir,
-    if (file.exists(paste0(dir, "/inst"))) "/inst",
-    "/specs/",
-    name,
-    ".json"
-  ), "/", FALSE)
-  if (overwrite || !file.exists(path)) jsonlite::write_json(spec, path, auto_unbox = TRUE)
+  path <- normalizePath(
+    paste0(
+      dir,
+      if (file.exists(paste0(dir, "/inst"))) "/inst",
+      "/specs/",
+      name,
+      ".json"
+    ),
+    "/",
+    FALSE
+  )
+  if (overwrite || !file.exists(path))
+    jsonlite::write_json(spec, path, auto_unbox = TRUE)
   if (interactive()) {
-    cli_bullets(c(v = "created a spec file for {name}:", "*" = paste0("{.file ", path, "}")))
+    cli_bullets(c(
+      v = "created a spec file for {name}:",
+      "*" = paste0("{.file ", path, "}")
+    ))
   }
   invisible(path)
 }

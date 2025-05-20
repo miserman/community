@@ -21,20 +21,42 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_slider <- function(label, id = label, ..., min = 0, max = 1, step = 1, default = max,
-                         note = NULL, dataset = NULL, depends = NULL) {
+input_slider <- function(
+  label,
+  id = label,
+  ...,
+  min = 0,
+  max = 1,
+  step = 1,
+  default = max,
+  note = NULL,
+  dataset = NULL,
+  depends = NULL
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   r <- c(
     '<div class="wrapper slider-wrapper">',
     paste0('<label class="form-label" for="', id, '">', label, "</label>"),
     paste0(
-      '<input role="slider" type="range" class="auto-input form-range" data-autoType="number" id="', id, '" data-default=', default,
-      " step=", step, " min=", min, " max=", max,
+      '<input role="slider" type="range" class="auto-input form-range" data-autoType="number" id="',
+      id,
+      '" data-default=',
+      default,
+      " step=",
+      step,
+      " min=",
+      min,
+      " max=",
+      max,
       if (!is.null(depends)) {
         paste0(' data-depends="', depends, '"')
       } else if (!is.null(dataset)) paste0('data-dataset="', dataset, '"'),
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+      if (length(a))
+        unlist(lapply(
+          seq_along(a),
+          function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+        )),
       if (!is.null(note)) paste0(' aria-description="', note, '"'),
       ">"
     ),
@@ -42,7 +64,10 @@ input_slider <- function(label, id = label, ..., min = 0, max = 1, step = 1, def
     "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$content <- c(caller$content, r)
   }
   r

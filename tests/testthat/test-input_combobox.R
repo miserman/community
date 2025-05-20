@@ -12,7 +12,8 @@ test_that("structure is intact", {
 
 test_that("grouped structure is intact", {
   raw <- input_combobox(
-    "label", list(a = c(1, 2), b = c(3, 4)),
+    "label",
+    list(a = c(1, 2), b = c(3, 4)),
     display = list(a = c("one", "two"), b = c("three", "four"))
   )
   expect_true(is.character(raw) && !any(raw == ""))
@@ -29,8 +30,11 @@ test_that("grouped structure is intact", {
 test_that("build environment is added to", {
   content <- input_combobox("label", c("a", "b", "c"))
   parts <- make_build_environment()
-  eval(expression(
-    input_combobox("label", c("a", "b", "c"))
-  ), parts)
+  eval(
+    expression(
+      input_combobox("label", c("a", "b", "c"))
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
 })

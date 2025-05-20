@@ -16,28 +16,53 @@
 #' @seealso For a group of switches, checkboxes, or radio buttons, use \code{\link{input_checkbox}}.
 #' @export
 
-input_switch <- function(label, id = label, ..., note = NULL, default_on = FALSE, as.checkbox = FALSE) {
+input_switch <- function(
+  label,
+  id = label,
+  ...,
+  note = NULL,
+  default_on = FALSE,
+  as.checkbox = FALSE
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   r <- c(
     paste0(
       '<div class="wrapper switch-wrapper"',
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+      if (length(a))
+        unlist(lapply(
+          seq_along(a),
+          function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+        )),
       ">"
     ),
     paste0('<div class="form-check', if (!as.checkbox) " form-switch", '">'),
-    paste0('<label class="form-check-label" for="', id, '">', label, "</label>"),
+    paste0(
+      '<label class="form-check-label" for="',
+      id,
+      '">',
+      label,
+      "</label>"
+    ),
     paste0(
       '<input data-autoType="switch" type="checkbox" autocomplete="off"',
-      ' class="auto-input form-check-input"', if (!as.checkbox) ' role="switch"', ' id="', id, '"',
+      ' class="auto-input form-check-input"',
+      if (!as.checkbox) ' role="switch"',
+      ' id="',
+      id,
+      '"',
       if (!is.null(note)) paste0(' aria-description="', note, '"'),
-      if (default_on) " checked", ">"
+      if (default_on) " checked",
+      ">"
     ),
     "</div>",
     "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$content <- c(caller$content, r)
   }
   r

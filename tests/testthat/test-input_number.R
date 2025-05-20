@@ -15,8 +15,11 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- input_number("id")
   parts <- make_build_environment()
-  eval(expression(
-    input_number("id")
-  ), parts)
+  eval(
+    expression(
+      input_number("id")
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
 })

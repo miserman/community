@@ -6,7 +6,8 @@
 \usage{
 data_add(filename, meta = list(), packagename = "datapackage.json",
   dir = ".", write = TRUE, refresh = TRUE, sha = "512",
-  clean = FALSE, open_after = FALSE)
+  clean = FALSE, pretty = FALSE, summarize_ids = FALSE,
+  open_after = FALSE, verbose = interactive())
 }
 \arguments{
 \item{filename}{A character vector of paths to plain-text tabular data files, relative to \code{dir}.}
@@ -29,7 +30,13 @@ if \code{openssl} is available (checked with \code{Sys.which('openssl')}).}
 
 \item{clean}{Logical; if \code{TRUE}, strips special characters before saving.}
 
+\item{pretty}{Logical; if \code{TRUE}, will pretty-print the datapackage.}
+
 \item{open_after}{Logical; if \code{TRUE}, opens the written datapackage after saving.}
+
+\item{verbose}{Logical; if \code{FALSE}, will not show status messages.}
+
+\item{summarize_ids:}{Logical; if \code{TRUE}, will include ID columns in schema field summaries.}
 }
 \value{
 An invisible version of the updated datapackage, which is also written to

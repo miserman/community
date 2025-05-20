@@ -15,8 +15,11 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- page_section(input_select("menu item", c("a", "b", "c")))
   parts <- make_build_environment()
-  eval(expression(
-    page_section(input_select("menu item", c("a", "b", "c")))
-  ), parts)
+  eval(
+    expression(
+      page_section(input_select("menu item", c("a", "b", "c")))
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
 })

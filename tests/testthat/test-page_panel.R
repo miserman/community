@@ -14,12 +14,17 @@ test_that("structure is intact", {
 
 test_that("build environment is added to", {
   content <- gsub(
-    '"panel"', '"panel0"', page_panel("title", input_select("menu item", c("a", "b", "c"))),
+    '"panel"',
+    '"panel0"',
+    page_panel("title", input_select("menu item", c("a", "b", "c"))),
     fixed = TRUE
   )
   parts <- make_build_environment()
-  eval(expression(
-    page_panel("title", input_select("menu item", c("a", "b", "c")))
-  ), parts)
+  eval(
+    expression(
+      page_panel("title", input_select("menu item", c("a", "b", "c")))
+    ),
+    parts
+  )
   expect_identical(parts$body, content)
 })

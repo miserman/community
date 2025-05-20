@@ -14,8 +14,11 @@ test_that("parse condition properly", {
 test_that("build environment is added to", {
   content <- input_rule("a == 1 || b == 2", list(c = 3))
   parts <- make_build_environment()
-  eval(expression(
-    input_rule("a == 1 || b == 2", list(c = 3))
-  ), parts)
+  eval(
+    expression(
+      input_rule("a == 1 || b == 2", list(c = 3))
+    ),
+    parts
+  )
   expect_identical(parts$rules[[1]], content)
 })

@@ -32,14 +32,33 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id = NULL, click = NULL, subto = NULL,
-                         options = NULL, features = NULL, filters = NULL, wide = TRUE, class = "compact", datatables = TRUE) {
+output_table <- function(
+  variables = NULL,
+  dataset = NULL,
+  dataview = NULL,
+  id = NULL,
+  click = NULL,
+  subto = NULL,
+  options = NULL,
+  features = NULL,
+  filters = NULL,
+  wide = TRUE,
+  class = "compact",
+  datatables = TRUE
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   if (is.null(id)) id <- paste0("table", caller$uid)
   defaults <- list(
-    paging = TRUE, scrollY = 500, scrollX = 500, scrollCollapse = TRUE,
-    scroller = TRUE, deferRender = TRUE, fixedColumns = TRUE, fixedHeader = TRUE
+    paging = TRUE,
+    scrollY = 500,
+    scrollX = 500,
+    scrollCollapse = TRUE,
+    scroller = TRUE,
+    deferRender = TRUE,
+    fixedColumns = TRUE,
+    fixedHeader = TRUE
   )
   if (!is.null(options$height)) {
     options$scrollY <- options$height
@@ -54,19 +73,34 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
   }
   for (n in names(defaults)) if (!n %in% so) options[[n]] <- defaults[[n]]
   type <- if (datatables) "datatable" else "table"
-  r <- paste(c(
-    paste0(
-      if (!datatables) {
-        paste0(
-          '<div class="table-wrapper" style="max-height: ', options$scrollY, if (is.numeric(options$scrollY)) "px", '">'
-        )
-      },
-      '<table class="auto-output tables', if (is.null(class)) "" else paste("", class), '"'
+  r <- paste(
+    c(
+      paste0(
+        if (!datatables) {
+          paste0(
+            '<div class="table-wrapper" style="max-height: ',
+            options$scrollY,
+            if (is.numeric(options$scrollY)) "px",
+            '">'
+          )
+        },
+        '<table class="auto-output tables',
+        if (is.null(class)) "" else paste("", class),
+        '"'
+      ),
+      if (!is.null(dataview)) paste0('data-view="', dataview, '"'),
+      if (!is.null(click)) paste0('data-click="', click, '"'),
+      paste0(
+        'id="',
+        id,
+        '" data-autoType="',
+        type,
+        '"></table>',
+        if (!datatables) "</div>"
+      )
     ),
-    if (!is.null(dataview)) paste0('data-view="', dataview, '"'),
-    if (!is.null(click)) paste0('data-click="', click, '"'),
-    paste0('id="', id, '" data-autoType="', type, '"></table>', if (!datatables) "</div>")
-  ), collapse = " ")
+    collapse = " "
+  )
   if (building) {
     if (!is.null(variables)) {
       if (!is.character(variables) || length(variables) > 1) {
@@ -75,7 +109,8 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
         } else if (!is.list(variables[[1]])) variables <- list(variables)
         vnames <- names(variables)
         for (i in seq_along(variables)) {
-          if (is.null(names(variables[[i]]))) variables[[i]] <- list(name = variables[[i]][[1]])
+          if (is.null(names(variables[[i]])))
+            variables[[i]] <- list(name = variables[[i]][[1]])
           if (!is.null(vnames[i])) variables[[i]]$title <- vnames[i]
         }
       }
@@ -85,16 +120,19 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
       if (!is.character(features) || length(features) > 1) {
         if (!is.list(features)) {
           features <- as.list(features)
-        } else if (!is.list(features[[1]]) && "name" %in% names(features)) features <- list(features)
+        } else if (!is.list(features[[1]]) && "name" %in% names(features))
+          features <- list(features)
         vnames <- names(features)
         for (i in seq_along(features)) {
-          if (is.null(names(features[[i]]))) features[[i]] <- list(name = features[[i]][[1]])
+          if (is.null(names(features[[i]])))
+            features[[i]] <- list(name = features[[i]][[1]])
           if (!is.null(vnames[i])) features[[i]]$title <- vnames[i]
         }
       }
       options$features <- unname(features)
     }
-    options$subto <- if (!is.null(subto) && length(subto) == 1) list(subto) else subto
+    options$subto <- if (!is.null(subto) && length(subto) == 1) list(subto) else
+      subto
     options$filters <- filters
     options$dataset <- dataset
     options$single_variable <- wide && length(variables) == 1
@@ -123,7 +161,8 @@ output_table <- function(variables = NULL, dataset = NULL, dataview = NULL, id =
         version = "2.2.2"
       )
     }
-    if (datatables) caller$datatable[[id]] <- options else caller$table[[id]] <- options
+    if (datatables) caller$datatable[[id]] <- options else
+      caller$table[[id]] <- options
     caller$content <- c(caller$content, r)
     caller$uid <- caller$uid + 1
   }

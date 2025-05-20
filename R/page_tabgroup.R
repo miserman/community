@@ -21,7 +21,8 @@
 
 page_tabgroup <- function(..., id = NULL, class = NULL, condition = NULL) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   parts$uid <- caller$uid
@@ -41,26 +42,55 @@ page_tabgroup <- function(..., id = NULL, class = NULL, condition = NULL) {
     if (!"id" %in% ns) e$id <- ids[i]
     if (!"class" %in% ns) e$class <- ""
     if (!"condition" %in% ns) e$condition <- ""
-    head[i] <- paste(c(
-      head[i], e$id, '" class="nav-link', if (i == 1) " active",
-      if (i == 1) '" aria-current="page', '" data-bs-target="#',
-      e$id, '" id="', e$id, '-tab">', e$name, "</button>"
-    ), collapse = "")
-    body[i] <- paste0(c(
-      body[i], e$id, '-tab" class="tab-pane fade', if (i == 1) " show active", if (e$class != "") c(" ", e$class),
-      '" id="', e$id, '"', if (e$condition != "") c(' condition="', e$condition, '"'),
-      ">", unlist(eval(e[names(e) == ""], parts), use.names = FALSE), "</div>"
-    ), collapse = "")
+    head[i] <- paste(
+      c(
+        head[i],
+        e$id,
+        '" class="nav-link',
+        if (i == 1) " active",
+        if (i == 1) '" aria-current="page',
+        '" data-bs-target="#',
+        e$id,
+        '" id="',
+        e$id,
+        '-tab">',
+        e$name,
+        "</button>"
+      ),
+      collapse = ""
+    )
+    body[i] <- paste0(
+      c(
+        body[i],
+        e$id,
+        '-tab" class="tab-pane fade',
+        if (i == 1) " show active",
+        if (e$class != "") c(" ", e$class),
+        '" id="',
+        e$id,
+        '"',
+        if (e$condition != "") c(' condition="', e$condition, '"'),
+        ">",
+        unlist(eval(e[names(e) == ""], parts), use.names = FALSE),
+        "</div>"
+      ),
+      collapse = ""
+    )
   }
   r <- c(
     "<nav>",
-    paste(c(
-      "<div",
-      if (!is.null(id)) c(' id="', id, '"'),
-      ' class="nav nav-tabs', if (!is.null(class)) c(" ", class), '"',
-      if (!is.null(condition)) c(' condition="', condition, '"'),
-      ">"
-    ), collapse = ""),
+    paste(
+      c(
+        "<div",
+        if (!is.null(id)) c(' id="', id, '"'),
+        ' class="nav nav-tabs',
+        if (!is.null(class)) c(" ", class),
+        '"',
+        if (!is.null(condition)) c(' condition="', condition, '"'),
+        ">"
+      ),
+      collapse = ""
+    ),
     head,
     "</div>",
     "</nav>",
@@ -70,7 +100,9 @@ page_tabgroup <- function(..., id = NULL, class = NULL, condition = NULL) {
   )
   if (building) {
     caller$content <- c(caller$content, r)
-    for (n in names(parts)) if (n != "content" && n != "uid") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content" && n != "uid")
+        caller[[n]] <- c(caller[[n]], parts[[n]])
     caller$uid <- parts$uid + 1
   }
   r

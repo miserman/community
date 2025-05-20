@@ -15,8 +15,11 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- page_tabgroup()
   parts <- make_build_environment()
-  eval(expression(
-    page_tabgroup()
-  ), parts)
+  eval(
+    expression(
+      page_tabgroup()
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
 })

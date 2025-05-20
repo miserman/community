@@ -31,20 +31,42 @@
 #' a list with the dataset's metadata.
 #' @export
 
-download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, version = ":latest",
-                                    server = NULL, key = NULL, load = TRUE, decompress = FALSE,
-                                    refresh = FALSE, branch = NULL, verbose = FALSE) {
+download_dataverse_data <- function(
+  id,
+  outdir = tempdir(),
+  files = NULL,
+  version = ":latest",
+  server = NULL,
+  key = NULL,
+  load = TRUE,
+  decompress = FALSE,
+  refresh = FALSE,
+  branch = NULL,
+  verbose = FALSE
+) {
   if (missing(id)) cli_abort("{.arg id} must be specified")
   if (!is.character(outdir)) cli_abort("{.arg outdir} must be a character")
-  meta <- download_dataverse_info(id, server = server, key = key, refresh = refresh, branch = branch)
+  meta <- download_dataverse_info(
+    id,
+    server = server,
+    key = key,
+    refresh = refresh,
+    branch = branch
+  )
   fs <- vapply(meta$files, function(m) m$dataFile$filename, "")
   which_files <- if (!is.null(files)) {
     if (is.numeric(files)) {
       files[files <= length(fs)]
     } else {
-      grep(paste0(
-        "(?:", paste(gsub(".", "\\.", files, fixed = TRUE), collapse = "|"), ")"
-      ), fs, TRUE)
+      grep(
+        paste0(
+          "(?:",
+          paste(gsub(".", "\\.", files, fixed = TRUE), collapse = "|"),
+          ")"
+        ),
+        fs,
+        TRUE
+      )
     }
   } else {
     seq_along(fs)
@@ -70,34 +92,54 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
   }
   if (length(which_files) == length(fs) || !missing(version)) {
     zf <- paste0(outdir, gsub("\\W", "", meta$datasetPersistentId), ".zip")
-    if (verbose) cli_alert_info("downloading dataset: {meta$datasetPersistentId}")
+    if (verbose)
+      cli_alert_info("downloading dataset: {meta$datasetPersistentId}")
     if (is.character(key)) {
       if (verbose) cli_alert_info("trying with key")
       tryCatch(
-        system2("curl", c(
-          paste0("-H X-Dataverse-key:", key),
-          "-o", zf,
-          paste0(
-            meta$server, "api/access/dataset/:persistentId/versions/", version, "?persistentId=",
-            meta$datasetPersistentId
-          )
-        ), stdout = TRUE),
+        system2(
+          "curl",
+          c(
+            paste0("-H X-Dataverse-key:", key),
+            "-o",
+            zf,
+            paste0(
+              meta$server,
+              "api/access/dataset/:persistentId/versions/",
+              version,
+              "?persistentId=",
+              meta$datasetPersistentId
+            )
+          ),
+          stdout = TRUE
+        ),
         error = function(e) NULL
       )
     } else {
       if (verbose) cli_alert_info("trying without key")
       tryCatch(
-        download.file(paste0(
-          meta$server, "api/access/dataset/:persistentId/versions/", version, "?persistentId=",
-          meta$datasetPersistentId
-        ), zf, quiet = TRUE, mode = "wb"),
+        download.file(
+          paste0(
+            meta$server,
+            "api/access/dataset/:persistentId/versions/",
+            version,
+            "?persistentId=",
+            meta$datasetPersistentId
+          ),
+          zf,
+          quiet = TRUE,
+          mode = "wb"
+        ),
         error = function(e) NULL
       )
     }
     if (file.exists(zf)) {
       unzip(zf, exdir = sub("/$", "", outdir))
       unlink(zf)
-    } else if (verbose) cli_alert_info("failed to download dataset {meta$id}; trying individual files...")
+    } else if (verbose)
+      cli_alert_info(
+        "failed to download dataset {meta$id}; trying individual files..."
+      )
   }
   for (i in which_files) {
     m <- meta$files[[i]]
@@ -108,32 +150,45 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
         if (verbose) cli_alert_info("trying without key")
         tryCatch(
           download.file(
-            paste0(meta$server, "api/access/datafile/", m$dataFile$id), ffsx[i],
-            quiet = TRUE, mode = "wb"
+            paste0(meta$server, "api/access/datafile/", m$dataFile$id),
+            ffsx[i],
+            quiet = TRUE,
+            mode = "wb"
           ),
           error = function(e) NULL
         )
       } else {
         if (verbose) cli_alert_info("trying with key")
         tryCatch(
-          system2("curl", c(
-            paste0("-H X-Dataverse-key:", key),
-            "-o", ffsx[i],
-            paste0(meta$server, "api/access/datafile/", m$dataFile$id)
-          ), stdout = TRUE),
+          system2(
+            "curl",
+            c(
+              paste0("-H X-Dataverse-key:", key),
+              "-o",
+              ffsx[i],
+              paste0(meta$server, "api/access/datafile/", m$dataFile$id)
+            ),
+            stdout = TRUE
+          ),
           error = function(e) NULL
         )
       }
-      if (verbose && !file.exists(ffsx[i])) cli_alert_info("failed to download file: {.file {m$label}}")
+      if (verbose && !file.exists(ffsx[i]))
+        cli_alert_info("failed to download file: {.file {m$label}}")
     }
     if (file.exists(ffsx[i])) {
       if (verbose && m$dataFile$md5 != md5sum(ffsx[i])) {
-        cli_warn("file was downloaded but its checksum did not match: {.file {ffsx[i]}}")
+        cli_warn(
+          "file was downloaded but its checksum did not match: {.file {ffsx[i]}}"
+        )
       }
       if (decompress && grepl("[gbx]z2?$", ffsx[i])) {
         if (verbose) cli_alert_info("decompressing file: {.file {ffsx[i]}}")
         system2(
-          c(xz = "xz", bz = "bunzip2", gz = "gzip")[substring(ffsx[i], nchar(ffsx[i]) - 1)],
+          c(xz = "xz", bz = "bunzip2", gz = "gzip")[substring(
+            ffsx[i],
+            nchar(ffsx[i]) - 1
+          )],
           c("-df", shQuote(ffsx[i]))
         )
       }
@@ -146,7 +201,10 @@ download_dataverse_data <- function(id, outdir = tempdir(), files = NULL, versio
         if (json) {
           jsonlite::read_json(ffs[i], simplifyVector = TRUE)
         } else {
-          read_delim_arrow(gzfile(ffsx[i]), if (grepl("csv", format, fixed = TRUE)) "," else "\t")
+          read_delim_arrow(
+            gzfile(ffsx[i]),
+            if (grepl("csv", format, fixed = TRUE)) "," else "\t"
+          )
         },
         error = function(e) NULL
       )

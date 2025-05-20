@@ -42,19 +42,44 @@
 #' @return An invisible version of the view list (the view's \code{view.json} file).
 #' @export
 
-datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL, ids = NULL,
-                             files = NULL, run_after = NULL, run_before = NULL, measure_info = list(),
-                             remote = NULL, url = NULL, children = list(), execute = TRUE, prefer_repo = TRUE,
-                             preselect_files = FALSE, refresh_map = FALSE, overwrite = FALSE, verbose = TRUE) {
-  if (missing(commons)) cli_abort('{.arg commons} must be speficied (e.g., commons = ".")')
+datacommons_view <- function(
+  commons,
+  name,
+  output = NULL,
+  ...,
+  variables = NULL,
+  ids = NULL,
+  files = NULL,
+  run_after = NULL,
+  run_before = NULL,
+  measure_info = list(),
+  remote = NULL,
+  url = NULL,
+  children = list(),
+  execute = TRUE,
+  prefer_repo = TRUE,
+  preselect_files = FALSE,
+  refresh_map = FALSE,
+  overwrite = FALSE,
+  verbose = TRUE
+) {
+  if (missing(commons))
+    cli_abort('{.arg commons} must be speficied (e.g., commons = ".")')
   if (missing(name)) {
     name <- list.files(paste0(commons, "/views"))[1]
-    if (is.na(name)) cli_abort("{.arg name} must be specified since no views are present in {commons}")
+    if (is.na(name))
+      cli_abort(
+        "{.arg name} must be specified since no views are present in {commons}"
+      )
   }
   check <- check_template("datacommons", dir = commons)
   view_dir <- normalizePath(paste0(commons, "/views/", name), "/", FALSE)
   dir.create(view_dir, FALSE, TRUE)
-  paths <- paste0(view_dir, "/", c("view.json", "manifest.json", "run_after.R", "run_before.R"))
+  paths <- paste0(
+    view_dir,
+    "/",
+    c("view.json", "manifest.json", "run_after.R", "run_before.R")
+  )
   base_run_after <- run_after
   if (!is.null(run_after)) {
     if (length(run_after) > 1 || !grepl("\\w\\.\\w+$", run_after)) {
@@ -65,7 +90,9 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
       base_run_after <- paste0(commons, "/", run_after)
     }
   }
-  if (!is.null(run_before) && (length(run_before) > 1 || !file.exists(run_before))) {
+  if (
+    !is.null(run_before) && (length(run_before) > 1 || !file.exists(run_before))
+  ) {
     if (verbose) cli_alert_info("writting {.file run_before.R}")
     writeLines(run_before, paths[4])
     run_before <- paths[4]
@@ -106,7 +133,8 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
       write_view <- TRUE
     } else if (length(view$run_after)) {
       base_run_after <- view$run_after
-      if (!file.exists(base_run_after)) base_run_after <- paste0(commons, "/", base_run_after)
+      if (!file.exists(base_run_after))
+        base_run_after <- paste0(commons, "/", base_run_after)
     }
     if (!is.null(run_before) && !identical(view$run_before, run_before)) {
       view$run_before <- run_before
@@ -128,7 +156,8 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
       view$children <- children
       write_view <- TRUE
     }
-    if (verbose && write_view) cli_alert_info("updating existing {.file view.json}")
+    if (verbose && write_view)
+      cli_alert_info("updating existing {.file view.json}")
   }
   outbase <- outdir <- view$output
   if (!is.null(outdir)) {
@@ -142,18 +171,36 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
     outbase <- sub("/docs(?:/data)?$", "", outdir)
   }
   if (length(view$remote)) {
-    remote_parts <- strsplit(sub("^(?:https?://)?(?:www\\.)?github\\.com/", "", view$remote), "/")[[1]]
-    if (is.null(view$url)) view$url <- paste0("https://", remote_parts[1], ".github.io/", remote_parts[2])
+    remote_parts <- strsplit(
+      sub("^(?:https?://)?(?:www\\.)?github\\.com/", "", view$remote),
+      "/"
+    )[[1]]
+    if (is.null(view$url))
+      view$url <- paste0(
+        "https://",
+        remote_parts[1],
+        ".github.io/",
+        remote_parts[2]
+      )
     if (!is.null(outdir)) {
       if (!dir.exists(outbase)) {
         outbase <- dirname(outbase)
         dir.create(outbase, FALSE, TRUE)
         wdir <- getwd()
         setwd(outbase)
-        if (verbose) cli_alert_info(paste0("cloning remote view: {.url https://github.com/", view$remote, "}"))
+        if (verbose)
+          cli_alert_info(paste0(
+            "cloning remote view: {.url https://github.com/",
+            view$remote,
+            "}"
+          ))
         overwrite <- TRUE
         tryCatch(
-          system2("git", c("clone", paste0("https://github.com/", view$remote, ".git")), stdout = TRUE),
+          system2(
+            "git",
+            c("clone", paste0("https://github.com/", view$remote, ".git")),
+            stdout = TRUE
+          ),
           error = function(e) warning("remote clone failed: ", e$message)
         )
         setwd(wdir)
@@ -167,75 +214,124 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
         ch$name <- sub("^.*/", "", ch$remote)
       }
       if (is.null(ch$url)) {
-        remote_parts <- strsplit(sub("^(?:https?://)?(?:www\\.)?github\\.com/", "", ch$remote), "/")[[1]]
-        ch$url <- paste0("https://", remote_parts[1], ".github.io/", remote_parts[2])
+        remote_parts <- strsplit(
+          sub("^(?:https?://)?(?:www\\.)?github\\.com/", "", ch$remote),
+          "/"
+        )[[1]]
+        ch$url <- paste0(
+          "https://",
+          remote_parts[1],
+          ".github.io/",
+          remote_parts[2]
+        )
       }
       ch
     })
   }
   if (length(view$variables)) view$variables <- as.character(view$variables)
   if (length(view$ids)) view$ids <- as.character(view$ids)
-  if (!is.null(outbase) && !dir.exists(outbase)) init_site(outbase, view$name, quiet = TRUE)
+  if (!is.null(outbase) && !dir.exists(outbase))
+    init_site(outbase, view$name, quiet = TRUE)
   if (is.null(view$output)) outdir <- view_dir
   if (write_view) jsonlite::write_json(view, paths[1], auto_unbox = TRUE)
   if (execute) {
     source_env <- new.env()
-    source_env$datacommons_view <- function(...) {}
+    source_env$datacommons_view <- function(...) {
+    }
     if (length(view$run_before) && file.exists(view$run_before)) {
-      if (verbose) cli_alert_info("running pre-view script ({.file {view$run_before}})")
-      src <- parse(text = gsub("community::datacommons_view", "datacommons_view", readLines(view$run_before, warn = FALSE), fixed = TRUE))
+      if (verbose)
+        cli_alert_info("running pre-view script ({.file {view$run_before}})")
+      src <- parse(
+        text = gsub(
+          "community::datacommons_view",
+          "datacommons_view",
+          readLines(view$run_before, warn = FALSE),
+          fixed = TRUE
+        )
+      )
       source(local = source_env, exprs = src)
     }
     if (verbose) cli_alert_info("checking for file maps")
-    map <- datacommons_map_files(commons, overwrite = refresh_map, verbose = verbose)
+    map <- datacommons_map_files(
+      commons,
+      overwrite = refresh_map,
+      verbose = verbose
+    )
     files <- map$variables[
-      (if (length(view$files)) grepl(view$files, map$variables$file) else TRUE) &
+      (if (length(view$files)) grepl(view$files, map$variables$file) else
+        TRUE) &
         (if (length(view$variables)) {
-          map$variables$full_name %in% view$variables | map$variables$dir_name %in% view$variables | map$variables$variable %in% view$variables
+          map$variables$full_name %in%
+            view$variables |
+            map$variables$dir_name %in% view$variables |
+            map$variables$variable %in% view$variables
         } else {
           TRUE
         }) &
         (if (length(view$ids)) {
-          sub("^[^/]+/[^/]+/", "", map$variables$file) %in% unique(unlist(
-            lapply(map$ids[view$ids %in% names(map$ids)], "[[", "files"),
-            use.names = FALSE
-          ))
+          sub("^[^/]+/[^/]+/", "", map$variables$file) %in%
+            unique(unlist(
+              lapply(map$ids[view$ids %in% names(map$ids)], "[[", "files"),
+              use.names = FALSE
+            ))
         } else {
           TRUE
-        }), ,
+        }),
+      ,
       drop = FALSE
     ]
     manifest <- NULL
     if (nrow(files)) {
       cfs <- paste0("/", files$file)
-      files <- files[order(
-        grepl(if (prefer_repo) "cache/" else "repos/", files$file) -
-          Reduce("+", lapply(view$ids, function(id) cfs %in% map$ids[[id]]$file))
-      ), ]
-      files <- files[!duplicated(paste(files$dir_name, basename(files$file))), , drop = FALSE]
+      files <- files[
+        order(
+          grepl(if (prefer_repo) "cache/" else "repos/", files$file) -
+            Reduce(
+              "+",
+              lapply(view$ids, function(id) cfs %in% map$ids[[id]]$file)
+            )
+        ),
+      ]
+      files <- files[
+        !duplicated(paste(files$dir_name, basename(files$file))),
+        ,
+        drop = FALSE
+      ]
       if (preselect_files) {
-        sel_files <- unique(unlist(lapply(split(files, files$dir_name), function(fs) {
-          if (nrow(fs) == 1) {
-            fs$file
-          } else {
-            ccfs <- sub("^/", "", fs$file)
-            ifm <- vapply(map$ids[view$ids], function(im) ccfs %in% sub("^/", "", im$files), logical(length(ccfs)))
-            is <- colSums(ifm) != 0
-            sel <- NULL
-            for (i in seq_along(ccfs)) {
-              if (any(is[ifm[i, ]])) {
-                sel <- c(sel, fs$file[i])
-                is[ifm[i, ]] <- FALSE
+        sel_files <- unique(unlist(
+          lapply(split(files, files$dir_name), function(fs) {
+            if (nrow(fs) == 1) {
+              fs$file
+            } else {
+              ccfs <- sub("^/", "", fs$file)
+              ifm <- vapply(
+                map$ids[view$ids],
+                function(im) ccfs %in% sub("^/", "", im$files),
+                logical(length(ccfs))
+              )
+              is <- colSums(ifm) != 0
+              sel <- NULL
+              for (i in seq_along(ccfs)) {
+                if (any(is[ifm[i, ]])) {
+                  sel <- c(sel, fs$file[i])
+                  is[ifm[i, ]] <- FALSE
+                }
               }
+              sel
             }
-            sel
-          }
-        }), use.names = FALSE))
+          }),
+          use.names = FALSE
+        ))
         files <- files[files$file %in% sel_files, ]
       }
-      files <- files[order(file.mtime(paste0(commons, "/", files$file)), decreasing = TRUE), ]
+      files <- files[
+        order(file.mtime(paste0(commons, "/", files$file)), decreasing = TRUE),
+      ]
       if (verbose) cli_alert_info("updating manifest: {.file {paths[2]}}")
-      repo_manifest <- jsonlite::read_json(paste0(commons, "/manifest/repos.json"))
+      repo_manifest <- jsonlite::read_json(paste0(
+        commons,
+        "/manifest/repos.json"
+      ))
       manifest <- lapply(split(files, files$repo), function(r) {
         hr <- repo_manifest[[r$repo[[1]]]]
         files <- paste0(commons, "/", unique(r$file))
@@ -255,7 +351,9 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
         )
       })
       if (is.character(measure_info)) {
-        measure_info <- if (length(measure_info) == 1 && file.exists(measure_info)) {
+        measure_info <- if (
+          length(measure_info) == 1 && file.exists(measure_info)
+        ) {
           jsonlite::read_json(measure_info)
         } else {
           as.list(measure_info)
@@ -264,8 +362,10 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
       base_vars <- sub("^[^:/]+[:/]", "", view$variables)
       for (r in unique(files$repo)) {
         measure_info_files <- sort(list.files(
-          paste0(commons, "/repos/", sub("^.+/", "", r)), "^measure_info[^.]*\\.json$",
-          full.names = TRUE, recursive = TRUE
+          paste0(commons, "/repos/", sub("^.+/", "", r)),
+          "^measure_info[^.]*\\.json$",
+          full.names = TRUE,
+          recursive = TRUE
         ))
         measure_info_files <- measure_info_files[
           !grepl("/docs/data/", measure_info_files, fixed = TRUE) &
@@ -280,8 +380,15 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
             m <- list(m)
             names(m) <- m[[1]]$measure
           }
-          remote <- paste0(get_git_remote(sub("(^.+repos/[^/]+/).*$", "\\1.git/config", f)), "/")
-          source_file <- sub("^/[^/]+/[^/]+/", remote, sub(commons, "", f, fixed = TRUE))
+          remote <- paste0(
+            get_git_remote(sub("(^.+repos/[^/]+/).*$", "\\1.git/config", f)),
+            "/"
+          )
+          source_file <- sub(
+            "^/[^/]+/[^/]+/",
+            remote,
+            sub(commons, "", f, fixed = TRUE)
+          )
           for (mn in names(m)) {
             if (substring(mn, 1, 1) != "_") {
               m[[mn]]$source_file <- source_file
@@ -292,14 +399,17 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
         if (length(ri)) {
           ri <- unlist(ri, recursive = FALSE)
           nri <- names(ri)
-          if (any(nri == "")) for (mname in which(nri == "")) names(ri)[mname] <- ri[[mname]]$measure
+          if (any(nri == ""))
+            for (mname in which(nri == ""))
+              names(ri)[mname] <- ri[[mname]]$measure
           es <- nri[substring(nri, 1, 1) == "_" & !nri %in% view$variables]
           if (length(es)) {
             for (e in es) {
               if (!is.null(names(ri[[e]]))) {
                 if (is.null(measure_info[[e]])) measure_info[[e]] <- list()
                 su <- !names(ri[[e]]) %in% names(measure_info[[e]])
-                if (any(su)) measure_info[[e]] <- c(measure_info[[e]], ri[[e]][su])
+                if (any(su))
+                  measure_info[[e]] <- c(measure_info[[e]], ri[[e]][su])
               }
             }
           }
@@ -318,14 +428,19 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
             nri <- names(ri)
           }
           rendered_names <- render_info_names(ri)
-          ri <- ri[(if (length(view$variables)) {
-            nri %in% rendered_names[names(rendered_names) %in% view$variables]
-          } else {
-            TRUE
-          }) & !nri %in% names(measure_info)]
+          ri <- ri[
+            (if (length(view$variables)) {
+              nri %in% rendered_names[names(rendered_names) %in% view$variables]
+            } else {
+              TRUE
+            }) &
+              !nri %in% names(measure_info)
+          ]
           if (length(ri)) {
             measure_info[names(ri)] <- lapply(
-              ri, function(e) if (is.null(names(e)) && !is.null(names(e[[1]]))) e[[1]] else e
+              ri,
+              function(e)
+                if (is.null(names(e)) && !is.null(names(e[[1]]))) e[[1]] else e
             )
           }
         }
@@ -343,11 +458,24 @@ datacommons_view <- function(commons, name, output = NULL, ..., variables = NULL
       cli_warn("no files were found")
     }
     if (length(base_run_after) && file.exists(base_run_after)) {
-      if (verbose) cli_alert_info("running post-view script ({.file {base_run_after}})")
-      src <- parse(text = gsub("community::datacommons_view", "datacommons_view", readLines(base_run_after, warn = FALSE), fixed = TRUE))
+      if (verbose)
+        cli_alert_info("running post-view script ({.file {base_run_after}})")
+      src <- parse(
+        text = gsub(
+          "community::datacommons_view",
+          "datacommons_view",
+          readLines(base_run_after, warn = FALSE),
+          fixed = TRUE
+        )
+      )
       source(local = source_env, exprs = src)
     }
-    jsonlite::write_json(manifest, paste0(outdir, "/manifest.json"), auto_unbox = TRUE, pretty = TRUE)
+    jsonlite::write_json(
+      manifest,
+      paste0(outdir, "/manifest.json"),
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
   }
   init_datacommons(commons, refresh_after = FALSE, verbose = FALSE)
   invisible(view)

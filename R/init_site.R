@@ -20,89 +20,134 @@
 #' @return Path to the created site directory.
 #' @export
 
-init_site <- function(dir, title = "app", template = "mtcars", with_data = FALSE, node_project = FALSE,
-                      include_api = FALSE, overwrite = FALSE, quiet = !interactive()) {
+init_site <- function(
+  dir,
+  title = "app",
+  template = "mtcars",
+  with_data = FALSE,
+  node_project = FALSE,
+  include_api = FALSE,
+  overwrite = FALSE,
+  quiet = !interactive()
+) {
   if (missing(dir)) cli_abort('{.arg dir} must be speficied (e.g., dir = ".")')
   check <- check_template("site", dir = dir)
   if (!quiet && check$exists && !overwrite) {
-    cli_bullets(c(`!` = "site files already exist", i = "add {.code overwrite = TRUE} to overwrite them"))
+    cli_bullets(c(
+      `!` = "site files already exist",
+      i = "add {.code overwrite = TRUE} to overwrite them"
+    ))
   }
   dir <- normalizePath(paste0(dir, "/", check$spec$dir), "/", FALSE)
   dir.create(dir, FALSE, TRUE)
   dir <- normalizePath(dir, "/", FALSE)
-  paths <- paste0(dir, "/", c(
-    "README.md", "site.R", "package.json", "server.js", ".gitignore", "build.R",
-    "project.Rproj", "netlify.toml"
-  ))
+  paths <- paste0(
+    dir,
+    "/",
+    c(
+      "README.md",
+      "site.R",
+      "package.json",
+      "server.js",
+      ".gitignore",
+      "build.R",
+      "project.Rproj",
+      "netlify.toml"
+    )
+  )
   if (overwrite) unlink(paths, TRUE)
   if (!file.exists(paths[1])) {
-    writeLines(c(
-      paste("#", title),
-      "<template: Describe the site>",
-      "\n## Run",
-      "```R",
-      '# remotes::install_github("miserman/community")',
-      "library(community)",
-      "\n# from the site directory:",
-      'site_build(".")',
-      "```"
-    ), paths[1])
+    writeLines(
+      c(
+        paste("#", title),
+        "<template: Describe the site>",
+        "\n## Run",
+        "```R",
+        '# remotes::install_github("miserman/community")',
+        "library(community)",
+        "\n# from the site directory:",
+        'site_build(".")',
+        "```"
+      ),
+      paths[1]
+    )
   }
-  template <- paste0(path.package("community"), c("/inst", ""), "/templates/", template, "/")
+  template <- paste0(
+    system.file(package = "community"),
+    c("/inst", ""),
+    "/templates/",
+    template,
+    "/"
+  )
   template <- template[which(file.exists(template))[1]]
   if (!is.na(template)) {
     if (!file.exists(paths[2])) file.copy(paste0(template, "site.R"), paths[2])
     if (!file.exists(paths[6])) file.copy(paste0(template, "build.R"), paths[6])
   }
   if (node_project && !file.exists(paths[3])) {
-    jsonlite::write_json(list(
-      name = gsub("\\s+", "_", tolower(title)),
-      version = "1.0.0",
-      description = "",
-      main = "server.js",
-      directories = list(doc = "docs"),
-      scripts = list(start = "node server.js"),
-      dependencies = list(express = "latest"),
-      author = "",
-      license = "ISC"
-    ), paths[3], auto_unbox = TRUE, pretty = TRUE)
+    jsonlite::write_json(
+      list(
+        name = gsub("\\s+", "_", tolower(title)),
+        version = "1.0.0",
+        description = "",
+        main = "server.js",
+        directories = list(doc = "docs"),
+        scripts = list(start = "node server.js"),
+        dependencies = list(express = "latest"),
+        author = "",
+        license = "ISC"
+      ),
+      paths[3],
+      auto_unbox = TRUE,
+      pretty = TRUE
+    )
   }
   if (node_project && !file.exists(paths[4])) {
-    writeLines(c(
-      "'use strict'",
-      "const express = require('express'), app = express()",
-      "app.use(express.static('docs'))",
-      "app.listen(3000, function () {",
-      "  console.log('listening on port 3000')",
-      "})"
-    ), paths[4])
+    writeLines(
+      c(
+        "'use strict'",
+        "const express = require('express'), app = express()",
+        "app.use(express.static('docs'))",
+        "app.listen(3000, function () {",
+        "  console.log('listening on port 3000')",
+        "})"
+      ),
+      paths[4]
+    )
   }
   if (!file.exists(paths[5])) {
-    writeLines(c(
-      ".Rproj.user",
-      ".Rhistory",
-      ".Rdata",
-      ".httr-oauth",
-      ".DS_Store",
-      ".netlify",
-      "*.Rproj",
-      "node_modules",
-      "package-lock.json",
-      "docs/dist"
-    ), paths[5])
+    writeLines(
+      c(
+        ".Rproj.user",
+        ".Rhistory",
+        ".Rdata",
+        ".httr-oauth",
+        ".DS_Store",
+        ".netlify",
+        "*.Rproj",
+        "node_modules",
+        "package-lock.json",
+        "docs/dist"
+      ),
+      paths[5]
+    )
   }
-  if (!file.exists(paths[7]) && !any(grepl("\\.Rproj$", list.files(dir)))) writeLines("Version: 1.0\n", paths[7])
+  if (!file.exists(paths[7]) && !any(grepl("\\.Rproj$", list.files(dir))))
+    writeLines("Version: 1.0\n", paths[7])
   if (include_api && !file.exists(paths[8])) {
-    writeLines(c(
-      "[build]",
-      "  publish = 'docs'",
-      "[[redirects]]",
-      "  from = '/api'",
-      "  to = '/.netlify/functions/api'",
-      "  status = 200",
-      "[functions]",
-      "  directory = 'docs/functions'"
-    ), paths[8])
+    writeLines(
+      c(
+        "[build]",
+        "  publish = 'docs'",
+        "[[redirects]]",
+        "  from = '/api'",
+        "  to = '/.netlify/functions/api'",
+        "  status = 200",
+        "[functions]",
+        "  directory = 'docs/functions'"
+      ),
+      paths[8]
+    )
   }
   dir.create(paste0(dir, "/docs"), FALSE)
   dir.create(paste0(dir, "/docs/functions"), FALSE)

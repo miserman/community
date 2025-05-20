@@ -25,21 +25,35 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_menu <- function(..., position = "right", width = "300px", height = NULL, collapsible = TRUE,
-                      default_open = FALSE, wraps = TRUE, sizes = NA, breakpoints = NA, conditions = "") {
+page_menu <- function(
+  ...,
+  position = "right",
+  width = "300px",
+  height = NULL,
+  collapsible = TRUE,
+  default_open = FALSE,
+  wraps = TRUE,
+  sizes = NA,
+  breakpoints = NA,
+  conditions = ""
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   parts$uid <- caller$uid
   elements <- substitute(...(), environment())
   n <- length(elements)
   vertical <- position %in% c("left", "right")
-  wraps <- rep_len(if (length(wraps) == 1 && !is.character(wraps) && wraps) {
-    if (vertical) "row" else "col"
-  } else {
-    wraps
-  }, n)
+  wraps <- rep_len(
+    if (length(wraps) == 1 && !is.character(wraps) && wraps) {
+      if (vertical) "row" else "col"
+    } else {
+      wraps
+    },
+    n
+  )
   sizes <- rep_len(sizes, n)
   breakpoints <- rep_len(breakpoints, n)
   conditions <- rep_len(conditions, n)
@@ -48,40 +62,70 @@ page_menu <- function(..., position = "right", width = "300px", height = NULL, c
   if (is.numeric(width)) width <- paste0(width, "px")
   if (is.numeric(height)) height <- paste0(height, "px")
   r <- c(
-    paste0(c(
-      '<div data-state="', if (default_open) "open" else "closed", '" class="menu-wrapper menu-', position, '"',
-      c(
-        ' style="', position, ": ", if (default_open) 0 else paste0("-", width), "; ",
-        if (!is.null(height)) c("; height: ", height),
-        '"'
-      ),
-      ">"
-    ), collapse = ""),
     paste0(
-      '<div class="menu', if (vertical) " col" else " row",
-      if (!default_open) " hidden", " menu-", position, '">'
-    ),
-    unlist(lapply(seq_len(n), function(i) {
       c(
-        if (!is.na(wraps[i])) {
-          paste(c(
-            '<div class="', wraps[i],
-            if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
-            if (!is.na(sizes[i])) c("-", sizes[i]),
-            '"', if (conditions[i] != "") paste0(' id="', ids[i], '"'), ">"
-          ), collapse = "")
-        },
-        eval(elements[[i]], parts),
-        if (!is.na(wraps[i])) "</div>"
-      )
-    }), use.names = FALSE),
+        '<div data-state="',
+        if (default_open) "open" else "closed",
+        '" class="menu-wrapper menu-',
+        position,
+        '"',
+        c(
+          ' style="',
+          position,
+          ": ",
+          if (default_open) 0 else paste0("-", width),
+          "; ",
+          if (!is.null(height)) c("; height: ", height),
+          '"'
+        ),
+        ">"
+      ),
+      collapse = ""
+    ),
+    paste0(
+      '<div class="menu',
+      if (vertical) " col" else " row",
+      if (!default_open) " hidden",
+      " menu-",
+      position,
+      '">'
+    ),
+    unlist(
+      lapply(seq_len(n), function(i) {
+        c(
+          if (!is.na(wraps[i])) {
+            paste(
+              c(
+                '<div class="',
+                wraps[i],
+                if (!is.na(breakpoints[i])) c("-", breakpoints[i]),
+                if (!is.na(sizes[i])) c("-", sizes[i]),
+                '"',
+                if (conditions[i] != "") paste0(' id="', ids[i], '"'),
+                ">"
+              ),
+              collapse = ""
+            )
+          },
+          eval(elements[[i]], parts),
+          if (!is.na(wraps[i])) "</div>"
+        )
+      }),
+      use.names = FALSE
+    ),
     "</div>",
-    if (collapsible) paste0('<button type="button" class="menu-toggle" title="', position, ' menu"></button>'),
+    if (collapsible)
+      paste0(
+        '<button type="button" class="menu-toggle" title="',
+        position,
+        ' menu"></button>'
+      ),
     "</div>"
   )
   if (building) {
     caller$body <- c(caller$body, r)
-    for (n in names(parts)) if (n != "content") caller[[n]] <- c(caller[[n]], parts[[n]])
+    for (n in names(parts))
+      if (n != "content") caller[[n]] <- c(caller[[n]], parts[[n]])
     caller$uid <- parts$uid
     process_conditions(conditions, ids, caller)
   }

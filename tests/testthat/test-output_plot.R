@@ -11,9 +11,12 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- output_plot(id = "plot0")
   parts <- make_build_environment()
-  eval(expression(
-    output_plot()
-  ), parts)
+  eval(
+    expression(
+      output_plot()
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
   expect_true(parts$uid == 1)
   expect_identical(names(parts$credits$plotly), c("name", "url", "version"))

@@ -20,8 +20,16 @@
 #' @return Path to the created repository directory.
 #' @export
 
-init_repository <- function(dir, datasets = NULL, init_data = TRUE, init_site = TRUE, init_git = TRUE,
-                            template = "sdad_dashboard", overwrite = FALSE, quiet = !interactive()) {
+init_repository <- function(
+  dir,
+  datasets = NULL,
+  init_data = TRUE,
+  init_site = TRUE,
+  init_git = TRUE,
+  template = "sdad_dashboard",
+  overwrite = FALSE,
+  quiet = !interactive()
+) {
   if (missing(dir)) cli_abort('{.arg dir} must be speficied (e.g., dir = ".")')
   check <- check_template("repository", dir = dir)
   datasets_inited <- file.exists(paste0(dir, "/", datasets, "/data"))
@@ -30,39 +38,55 @@ init_repository <- function(dir, datasets = NULL, init_data = TRUE, init_site = 
   dir.create(paste0(dir, "/docs"), FALSE)
   paths <- paste0(dir, "/", c("README.md", ".gitignore", "build.R", "site.R"))
   if (!file.exists(paths[1])) {
-    writeLines(c(
-      "<template: Describe the repository>",
-      "\n# Structure",
-      "This is a community data repository, created with the `community::init_repository()` function.",
-      "1. `{set}/code/distribution/ingest.R` should download and prepare data from a public source, and output files to `{set}/data/distribution`.",
-      "2. `{set}/data/distribution/measure_info.json` should contain metadata for each of the measures in the distribution data file(s).",
-      if (init_site) {
-        paste(
-          "3. `build.R` will convert the distribution data to site-ready versions,",
-          "and `site.R` specifies the interface of the repository-specific data site."
-        )
-      }
-    ), paths[1])
+    writeLines(
+      c(
+        "<template: Describe the repository>",
+        "\n# Structure",
+        "This is a community data repository, created with the `community::init_repository()` function.",
+        "1. `{set}/code/distribution/ingest.R` should download and prepare data from a public source, and output files to `{set}/data/distribution`.",
+        "2. `{set}/data/distribution/measure_info.json` should contain metadata for each of the measures in the distribution data file(s).",
+        if (init_site) {
+          paste(
+            "3. `build.R` will convert the distribution data to site-ready versions,",
+            "and `site.R` specifies the interface of the repository-specific data site."
+          )
+        }
+      ),
+      paths[1]
+    )
   }
   if (!file.exists(paths[2])) {
-    writeLines(c(
-      ".Rproj.user",
-      ".Rhistory",
-      ".RData",
-      ".httr-oauth",
-      ".DS_Store",
-      ".netlify",
-      "*.Rproj",
-      "node_modules",
-      "package-lock.json",
-      "dist",
-      "original"
-    ), paths[2])
+    writeLines(
+      c(
+        ".Rproj.user",
+        ".Rhistory",
+        ".RData",
+        ".httr-oauth",
+        ".DS_Store",
+        ".netlify",
+        "*.Rproj",
+        "node_modules",
+        "package-lock.json",
+        "dist",
+        "original"
+      ),
+      paths[2]
+    )
   }
   if (init_site) {
-    td <- paste0(path.package("community"), c("/inst", ""), "/templates/", template, "/")
+    td <- paste0(
+      system.file(package = "community"),
+      c("/inst", ""),
+      "/templates/",
+      template,
+      "/"
+    )
     td <- td[which(file.exists(td))[1]]
-    if (is.na(td)) td <- paste0(path.package("community"), "/templates/sdad_dashboard")
+    if (is.na(td))
+      td <- paste0(
+        system.file(package = "community"),
+        "/templates/sdad_dashboard"
+      )
     if (overwrite) unlink(paste0(dir, c("/build.R", "/site.R")))
     if (!file.exists(paste0(dir, "/build.R"))) {
       file.copy(paste0(td, "/build.R"), paste0(dir, "/build.R"))
@@ -95,7 +119,9 @@ init_repository <- function(dir, datasets = NULL, init_data = TRUE, init_site = 
       }
     }
   }
-  if (init_git && !file.exists(paste0(dir, "/.git")) && Sys.which("git") != "") {
+  if (
+    init_git && !file.exists(paste0(dir, "/.git")) && Sys.which("git") != ""
+  ) {
     wd <- getwd()
     on.exit(setwd(wd))
     setwd(dir)

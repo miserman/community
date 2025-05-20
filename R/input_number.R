@@ -25,45 +25,81 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_number <- function(label, id = label, ..., default = NULL, variable = NULL, min = NULL, max = NULL, step = NULL,
-                         type = "number", class = NULL, note = NULL, dataview = NULL, floating_label = TRUE,
-                         buttons = FALSE, show_range = FALSE) {
+input_number <- function(
+  label,
+  id = label,
+  ...,
+  default = NULL,
+  variable = NULL,
+  min = NULL,
+  max = NULL,
+  step = NULL,
+  type = "number",
+  class = NULL,
+  note = NULL,
+  dataview = NULL,
+  floating_label = TRUE,
+  buttons = FALSE,
+  show_range = FALSE
+) {
   id <- gsub("\\s", "", id)
   r <- c(
     if (buttons || show_range) '<div class="wrapper number-input-row">',
     if (show_range) {
       paste0(
-        '<div><button role="button" label="set value to min" class="text-muted indicator-min"><span>', min, "</span></button></div>"
+        '<div><button role="button" label="set value to min" class="text-muted indicator-min"><span>',
+        min,
+        "</span></button></div>"
       )
     },
-    if (buttons) '<button role="button" label="decrease value" class="btn number-down">&lt;</button>',
-    paste0('<div class="wrapper text-wrapper', if (floating_label) " form-floating", '">'),
+    if (buttons)
+      '<button role="button" label="decrease value" class="btn number-down">&lt;</button>',
+    paste0(
+      '<div class="wrapper text-wrapper',
+      if (floating_label) " form-floating",
+      '">'
+    ),
     if (!floating_label) paste0('<label for="', id, '">', label, "</label>"),
-    paste0(c(
-      '<input type="', type, '"',
-      ' id="', id, '"',
-      if (!is.null(default)) paste0(' data-default="', default, '"'),
-      if (!is.null(note)) paste0(' aria-description="', note, '"'),
-      if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
-      if (!is.null(min)) paste0(' min="', min, '"'),
-      if (!is.null(max)) paste0(' max="', max, '"'),
-      if (!is.null(step)) paste0(' step="', step, '"'),
-      if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
-      unlist(list(...)),
-      ' class="form-control auto-input', if (!is.null(class)) paste("", class), '" data-autoType="number">',
-      if (floating_label) paste0('<label for="', id, '">', label, "</label>")
-    ), collapse = ""),
+    paste0(
+      c(
+        '<input type="',
+        type,
+        '"',
+        ' id="',
+        id,
+        '"',
+        if (!is.null(default)) paste0(' data-default="', default, '"'),
+        if (!is.null(note)) paste0(' aria-description="', note, '"'),
+        if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
+        if (!is.null(min)) paste0(' min="', min, '"'),
+        if (!is.null(max)) paste0(' max="', max, '"'),
+        if (!is.null(step)) paste0(' step="', step, '"'),
+        if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
+        unlist(list(...)),
+        ' class="form-control auto-input',
+        if (!is.null(class)) paste("", class),
+        '" data-autoType="number">',
+        if (floating_label) paste0('<label for="', id, '">', label, "</label>")
+      ),
+      collapse = ""
+    ),
     "</div>",
-    if (buttons) '<button role="button" label="increase value" class="btn number-up">&gt;</button>',
+    if (buttons)
+      '<button role="button" label="increase value" class="btn number-up">&gt;</button>',
     if (show_range) {
       paste0(
-        '<div><button role="button" label="set value to max" class="text-muted indicator-max"><span>', max, "</span></button></div>"
+        '<div><button role="button" label="set value to max" class="text-muted indicator-max"><span>',
+        max,
+        "</span></button></div>"
       )
     },
     if (buttons || show_range) "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$content <- c(caller$content, r)
   }
   r

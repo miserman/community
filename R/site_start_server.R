@@ -21,7 +21,10 @@ site_start_server <- function(dir, host = "127.0.0.1", port = 3000) {
     }
   }
   if (!server_exists) {
-    s <- tryCatch(startServer(host, port, list(staticPaths = static_path)), error = function(e) NULL)
+    s <- tryCatch(
+      startServer(host, port, list(staticPaths = static_path)),
+      error = function(e) NULL
+    )
     if (is.null(s)) {
       cli_warn(paste0("failed to create server on ", host, ":", port))
     }

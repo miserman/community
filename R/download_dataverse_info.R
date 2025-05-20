@@ -2,25 +2,43 @@
 #' @return \code{download_dataverse_info}: A list with the dataset's metadata.
 #' @export
 
-download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FALSE, branch = NULL,
-                                    version = ":latest", verbose = FALSE) {
+download_dataverse_info <- function(
+  id,
+  server = NULL,
+  key = NULL,
+  refresh = FALSE,
+  branch = NULL,
+  version = ":latest",
+  verbose = FALSE
+) {
   if (missing(id)) cli_abort("an id must be specified")
-  if (!grepl("doi", tolower(id), fixed = TRUE) && (grepl("github", id, fixed = TRUE) || grepl("^[^/]+/[^/]+$", id))) {
+  if (
+    !grepl("doi", tolower(id), fixed = TRUE) &&
+      (grepl("github", id, fixed = TRUE) || grepl("^[^/]+/[^/]+$", id))
+  ) {
     if (is.null(branch) && grepl("@|/tree/", id)) {
       branch <- regmatches(id, regexec("(?:@|tree/)([^/]+)", id))[[1]][2]
       if (is.na(branch)) branch <- NULL
     }
-    id <- regmatches(id, regexec("^(?:.*github\\.com/)?([^/]+/[^/@]+)", id))[[1]][2]
-    repo <- tryCatch(jsonlite::read_json(
-      paste0("https://api.github.com/repos/", id)
-    ), error = function(e) NULL)
+    id <- regmatches(id, regexec("^(?:.*github\\.com/)?([^/]+/[^/@]+)", id))[[
+      1
+    ]][2]
+    repo <- tryCatch(
+      jsonlite::read_json(
+        paste0("https://api.github.com/repos/", id)
+      ),
+      error = function(e) NULL
+    )
     if (!is.null(repo$default_branch)) {
       if (verbose) cli_alert_info("getting ID from Github repository {id}")
       dataset_doi <- NULL
       tryCatch(
         load(file(paste0(
-          "https://raw.githubusercontent.com/", id, "/",
-          if (is.null(branch)) repo$default_branch else branch, "/R/sysdata.rda"
+          "https://raw.githubusercontent.com/",
+          id,
+          "/",
+          if (is.null(branch)) repo$default_branch else branch,
+          "/R/sysdata.rda"
         ))),
         error = function(e) NULL
       )
@@ -43,11 +61,17 @@ download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FAL
         if (verbose) cli_alert_info("getting server from DOI ({id}) redirect")
         tryCatch(
           {
-            url <- gsub("<[^>]*>", "", system2("curl", paste0("https://doi.org/", id), stdout = TRUE)[5])
-            if (grepl("^http", url)) gsub("^https?://|/citation.*$", "", url) else NA
+            url <- gsub(
+              "<[^>]*>",
+              "",
+              system2("curl", paste0("https://doi.org/", id), stdout = TRUE)[5]
+            )
+            if (grepl("^http", url))
+              gsub("^https?://|/citation.*$", "", url) else NA
           },
           error = function(e) {
-            if (verbose) cli_alert_info("failed to get server from DOI ({id}) redirect")
+            if (verbose)
+              cli_alert_info("failed to get server from DOI ({id}) redirect")
             NA
           }
         )
@@ -67,18 +91,28 @@ download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FAL
       if (verbose) cli_alert_info("looking for API key in fall-backs")
       key <- Sys.getenv("DATAVERSE_KEY", getOption("dataverse.key", ""))
     }
-    if (!grepl("://", server, fixed = TRUE)) server <- paste0("https://", server)
+    if (!grepl("://", server, fixed = TRUE))
+      server <- paste0("https://", server)
     server <- sub("/api/.*$", "/", gsub("//+$", "/", paste0(server, "/")))
   }
   res <- tryCatch(
     {
       if (!file.exists(temp)) {
-        if (verbose) cli_alert_info("downloading dataset metadata for {id} from {server}")
+        if (verbose)
+          cli_alert_info("downloading dataset metadata for {id} from {server}")
         if (is.character(key) && key != "") {
           if (verbose) cli_alert_info("trying with key")
           download.file(
-            paste0(server, "api/datasets/:persistentId/versions/", version, "?persistentId=doi:", id), temp,
-            quiet = TRUE, headers = c("X-Dataverse-key" = key)
+            paste0(
+              server,
+              "api/datasets/:persistentId/versions/",
+              version,
+              "?persistentId=doi:",
+              id
+            ),
+            temp,
+            quiet = TRUE,
+            headers = c("X-Dataverse-key" = key)
           )
           if (file.exists(temp)) {
             res <- jsonlite::read_json(temp)
@@ -93,7 +127,13 @@ download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FAL
         } else {
           if (verbose) cli_alert_info("trying without key")
           res <- jsonlite::read_json(
-            paste0(server, "api/datasets/:persistentId/versions/", version, "?persistentId=doi:", id)
+            paste0(
+              server,
+              "api/datasets/:persistentId/versions/",
+              version,
+              "?persistentId=doi:",
+              id
+            )
           )$data
         }
         res$server <- server
@@ -116,7 +156,11 @@ download_dataverse_info <- function(id, server = NULL, key = NULL, refresh = FAL
       cli_abort(cli_bullets(c(
         x = "failed to retrive info",
         i = paste0(
-          "tried for this dataset: {.url ", server, "dataset.xhtml?persistentId=doi:", id, "}"
+          "tried for this dataset: {.url ",
+          server,
+          "dataset.xhtml?persistentId=doi:",
+          id,
+          "}"
         ),
         if (length(res)) c("!" = paste("got this error:", res))
       )))

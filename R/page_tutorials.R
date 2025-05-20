@@ -58,9 +58,16 @@
 #' @return A character vector of the content to be added.
 #' @export
 
-page_tutorials <- function(..., button = "Tutorials", id = NULL, class = NULL, note = NULL) {
+page_tutorials <- function(
+  ...,
+  button = "Tutorials",
+  id = NULL,
+  class = NULL,
+  note = NULL
+) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   parts <- new.env()
   attr(parts, "name") <- "community_site_parts"
   tutorials <- list(...)
@@ -73,7 +80,8 @@ page_tutorials <- function(..., button = "Tutorials", id = NULL, class = NULL, n
   }
   for (i in seq_along(tutorials)) {
     if (is.null(tutorials[[i]]$name)) {
-      tutorials[[i]]$name <- if (is.null(names(tutorials)[i])) paste("tutorial", i) else names(tutorials)[i]
+      tutorials[[i]]$name <- if (is.null(names(tutorials)[i]))
+        paste("tutorial", i) else names(tutorials)[i]
     }
     tutorials[[i]]$steps <- lapply(tutorials[[i]]$steps, function(s) {
       if (!is.null(s$before)) s$before <- as.list(s$before)
@@ -86,10 +94,13 @@ page_tutorials <- function(..., button = "Tutorials", id = NULL, class = NULL, n
     '<div class="wrapper button-wrapper">',
     paste0(
       '<button type="button" data-bs-toggle="modal" data-bs-target="#community_tutorials_menu" class="btn',
-      if (!is.null(class)) paste("", class), '"',
+      if (!is.null(class)) paste("", class),
+      '"',
       if (!is.null(id)) paste0(' id="', id, '"'),
       if (!is.null(note)) paste0(' aria-description="', note, '"'),
-      ">", button, "</button>"
+      ">",
+      button,
+      "</button>"
     ),
     "</div>"
   )

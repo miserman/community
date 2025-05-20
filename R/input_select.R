@@ -41,66 +41,134 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_select <- function(label, options, default = -1, display = options, id = label, ...,
-                         note = NULL, group_feature = NULL, variable = NULL, dataset = NULL, depends = NULL,
-                         dataview = NULL, subset = "filtered", selection_subset = "full_filter", filters = NULL,
-                         reset_button = FALSE, button_class = NULL, as.row = FALSE, floating_label = TRUE) {
+input_select <- function(
+  label,
+  options,
+  default = -1,
+  display = options,
+  id = label,
+  ...,
+  note = NULL,
+  group_feature = NULL,
+  variable = NULL,
+  dataset = NULL,
+  depends = NULL,
+  dataview = NULL,
+  subset = "filtered",
+  selection_subset = "full_filter",
+  filters = NULL,
+  reset_button = FALSE,
+  button_class = NULL,
+  as.row = FALSE,
+  floating_label = TRUE
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   if (as.row) floating_label <- FALSE
   r <- c(
     '<div class="wrapper select-wrapper">',
     if (!floating_label) paste0('<label for="', id, '">', label, "</label>"),
-    paste0('<div class="', paste(c(
-      if (reset_button) "input-group", if (floating_label) "form-floating"
-    ), collapse = " "), '">'),
     paste0(
-      '<select class="auto-input form-select" data-autoType="select" id="', id, '" ',
-      if (is.character(options) && length(options) == 1) paste0('data-optionSource="', options, '"'),
+      '<div class="',
+      paste(
+        c(
+          if (reset_button) "input-group",
+          if (floating_label) "form-floating"
+        ),
+        collapse = " "
+      ),
+      '">'
+    ),
+    paste0(
+      '<select class="auto-input form-select" data-autoType="select" id="',
+      id,
+      '" ',
+      if (is.character(options) && length(options) == 1)
+        paste0('data-optionSource="', options, '"'),
       if (!is.null(default)) paste0(' data-default="', default, '"'),
       if (!is.null(note)) paste0(' aria-description="', note, '"'),
       if (!is.null(dataview)) paste0(' data-view="', dataview, '"'),
       if (!is.null(subset)) paste0(' data-subset="', subset, '"'),
-      if (!is.null(selection_subset)) paste0(' data-selectionSubset="', selection_subset, '"'),
+      if (!is.null(selection_subset))
+        paste0(' data-selectionSubset="', selection_subset, '"'),
       if (!is.null(depends)) paste0(' data-depends="', depends, '"'),
       if (!is.null(dataset)) paste0(' data-dataset="', dataset, '"'),
       if (!is.null(variable)) paste0(' data-variable="', variable, '"'),
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
+      if (length(a))
+        unlist(lapply(
+          seq_along(a),
+          function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+        )),
       ">"
     ),
     if (is.list(options)) {
       i <- 0
       if (is.null(names(options))) names(options) <- seq_along(options)
-      unlist(lapply(names(options), function(g) {
-        group <- paste0('<optgroup label="', g, '">')
-        for (gi in seq_along(options[[g]])) {
-          i <<- i + 1
-          group <- c(group, paste0(
-            '<option value="', options[[g]][[gi]], '"', if (i == default) "selected", ">", display[[g]][[gi]], "</option>"
-          ))
-        }
-        c(group, "</optgroup>")
-      }), use.names = FALSE)
-    } else if (length(options) > 1 || !options %in% c("datasets", "variables", "ids", "palettes", "overlay_properties")) {
-      unlist(lapply(seq_along(options), function(i) {
-        paste0('<option value="', options[i], '"', if (i == default) "selected", ">", display[i], "</option>")
-      }), use.names = FALSE)
+      unlist(
+        lapply(names(options), function(g) {
+          group <- paste0('<optgroup label="', g, '">')
+          for (gi in seq_along(options[[g]])) {
+            i <<- i + 1
+            group <- c(
+              group,
+              paste0(
+                '<option value="',
+                options[[g]][[gi]],
+                '"',
+                if (i == default) "selected",
+                ">",
+                display[[g]][[gi]],
+                "</option>"
+              )
+            )
+          }
+          c(group, "</optgroup>")
+        }),
+        use.names = FALSE
+      )
+    } else if (
+      length(options) > 1 ||
+        !options %in%
+          c("datasets", "variables", "ids", "palettes", "overlay_properties")
+    ) {
+      unlist(
+        lapply(seq_along(options), function(i) {
+          paste0(
+            '<option value="',
+            options[i],
+            '"',
+            if (i == default) "selected",
+            ">",
+            display[i],
+            "</option>"
+          )
+        }),
+        use.names = FALSE
+      )
     },
     "</select>",
     if (floating_label) paste0('<label for="', id, '">', label, "</label>"),
     if (!missing(reset_button)) {
-      paste(c(
-        '<button type="button" class="btn btn-link', if (!is.null(button_class)) paste("", button_class), ' select-reset">',
-        if (is.character(reset_button)) reset_button else "Reset",
-        "</button>"
-      ), collapse = "")
+      paste(
+        c(
+          '<button type="button" class="btn btn-link',
+          if (!is.null(button_class)) paste("", button_class),
+          ' select-reset">',
+          if (is.character(reset_button)) reset_button else "Reset",
+          "</button>"
+        ),
+        collapse = ""
+      )
     },
     "</div>",
     "</div>"
   )
   if (as.row) r <- to_input_row(r)
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     if (!is.null(group_feature)) caller$select[[id]]$group <- group_feature
     if (!is.null(filters)) caller$select[[id]]$filters <- as.list(filters)
     caller$content <- c(caller$content, r)

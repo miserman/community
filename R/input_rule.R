@@ -20,7 +20,10 @@ input_rule <- function(condition, effects) {
   if (!is.character(condition)) condition <- deparse(condition)
   r <- list(condition = parse_rule(condition), effects = as.list(effects))
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$rules <- c(caller$rules, list(r))
   }
   r

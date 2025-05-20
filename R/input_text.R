@@ -18,32 +18,63 @@
 #' @return A character vector of the contents to be added.
 #' @export
 
-input_text <- function(label, id = label, ..., default = NULL, note = NULL, multiline = FALSE, class = NULL,
-                       floating_label = TRUE) {
+input_text <- function(
+  label,
+  id = label,
+  ...,
+  default = NULL,
+  note = NULL,
+  multiline = FALSE,
+  class = NULL,
+  floating_label = TRUE
+) {
   id <- gsub("\\s", "", id)
   a <- list(...)
   r <- c(
-    paste0('<div class="wrapper text-wrapper', if (floating_label) " form-floating", '">'),
+    paste0(
+      '<div class="wrapper text-wrapper',
+      if (floating_label) " form-floating",
+      '">'
+    ),
     if (!floating_label) paste0('<label for="', id, '">', label, "</label>"),
-    paste0(c(
-      "<", if (multiline) "textarea" else 'input type="text"',
-      ' id="', id, '"',
-      if (!is.null(default)) {
-        c(
-          ' placeholder="', default, '"',
-          ' value="', default, '"'
-        )
-      },
-      if (length(a)) unlist(lapply(seq_along(a), function(i) paste0(" ", names(a)[i], '="', a[[i]], '"'))),
-      if (!is.null(note)) c(' aria-description="', note, '"'),
-      ' class="form-control auto-input', if (!is.null(class)) paste("", class), '" data-autoType="intext">',
-      if (multiline) "</textarea>",
-      if (floating_label) paste0('<label for="', id, '">', label, "</label>")
-    ), collapse = ""),
+    paste0(
+      c(
+        "<",
+        if (multiline) "textarea" else 'input type="text"',
+        ' id="',
+        id,
+        '"',
+        if (!is.null(default)) {
+          c(
+            ' placeholder="',
+            default,
+            '"',
+            ' value="',
+            default,
+            '"'
+          )
+        },
+        if (length(a))
+          unlist(lapply(
+            seq_along(a),
+            function(i) paste0(" ", names(a)[i], '="', a[[i]], '"')
+          )),
+        if (!is.null(note)) c(' aria-description="', note, '"'),
+        ' class="form-control auto-input',
+        if (!is.null(class)) paste("", class),
+        '" data-autoType="intext">',
+        if (multiline) "</textarea>",
+        if (floating_label) paste0('<label for="', id, '">', label, "</label>")
+      ),
+      collapse = ""
+    ),
     "</div>"
   )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$content <- c(caller$content, r)
   }
   r

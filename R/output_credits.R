@@ -22,9 +22,14 @@
 
 output_credits <- function(add = NULL, exclude = NULL) {
   caller <- parent.frame()
-  building <- !is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts"
+  building <- !is.null(attr(caller, "name")) &&
+    attr(caller, "name") == "community_site_parts"
   id <- paste0("credits", caller$uid)
-  r <- paste0('<div id="', id, '" class="auto-output credits" data-autoType="credits"></div>')
+  r <- paste0(
+    '<div id="',
+    id,
+    '" class="auto-output credits" data-autoType="credits"></div>'
+  )
   if (building) {
     caller$content <- c(caller$content, r)
     if (!is.null(add) || !is.null(exclude)) {

@@ -10,8 +10,11 @@ test_that("structure is intact", {
 test_that("build environment is added to", {
   content <- page_text("text")
   parts <- make_build_environment()
-  eval(expression(
-    page_text("text")
-  ), parts)
+  eval(
+    expression(
+      page_text("text")
+    ),
+    parts
+  )
   expect_identical(parts$content, content)
 })

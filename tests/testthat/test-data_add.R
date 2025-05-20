@@ -19,17 +19,28 @@ test_that("adds to an existing package", {
 })
 
 test_that("equations are replaced", {
-  metadata <- data_add("mtcars.csv", list(variables = list(
-    e1 = list(description = " $a_{i} = b^\\frac{c}{d}$ "),
-    e2 = list(description = "$a_{i} = b^\\frac{c}{d}$"),
-    e3 = list(description = "\\[a_{i} = b^\\frac{c}{d}\\]"),
-    e4 = list(description = "\\(a_{i} = b^\\frac{c}{d}\\)"),
-    e5 = list(description = "\\begin{math}a_{i} = b^\\frac{c}{d}\\end{math}"),
-    t1 = list(description = "between $100 and $200")
-  )), dir = dir)
+  metadata <- data_add(
+    "mtcars.csv",
+    list(
+      variables = list(
+        e1 = list(description = " $a_{i} = b^\\frac{c}{d}$ "),
+        e2 = list(description = "$a_{i} = b^\\frac{c}{d}$"),
+        e3 = list(description = "\\[a_{i} = b^\\frac{c}{d}\\]"),
+        e4 = list(description = "\\(a_{i} = b^\\frac{c}{d}\\)"),
+        e5 = list(
+          description = "\\begin{math}a_{i} = b^\\frac{c}{d}\\end{math}"
+        ),
+        t1 = list(description = "between $100 and $200")
+      )
+    ),
+    dir = dir
+  )
   expect_true(all(grepl(
-    "<math", vapply(metadata$measure_info[1:5], "[[", "", "description"),
+    "<math",
+    vapply(metadata$measure_info[1:5], "[[", "", "description"),
     fixed = TRUE
   )))
-  expect_true(!grepl("<math", metadata$measure_info$t1$description, fixed = TRUE))
+  expect_true(
+    !grepl("<math", metadata$measure_info$t1$description, fixed = TRUE)
+  )
 })

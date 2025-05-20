@@ -19,19 +19,25 @@
 #' @export
 
 input_variable <- function(id, cases, default = "", display = list()) {
-  r <- Filter(length, list(
-    id = id,
-    states = lapply(seq_along(cases), function(i) {
-      list(
-        condition = parse_rule(names(cases[i])),
-        value = cases[[i]]
-      )
-    }),
-    default = default,
-    display = display
-  ))
+  r <- Filter(
+    length,
+    list(
+      id = id,
+      states = lapply(seq_along(cases), function(i) {
+        list(
+          condition = parse_rule(names(cases[i])),
+          value = cases[[i]]
+        )
+      }),
+      default = default,
+      display = display
+    )
+  )
   caller <- parent.frame()
-  if (!is.null(attr(caller, "name")) && attr(caller, "name") == "community_site_parts") {
+  if (
+    !is.null(attr(caller, "name")) &&
+      attr(caller, "name") == "community_site_parts"
+  ) {
     caller$variables <- c(caller$variables, list(r))
   }
   r

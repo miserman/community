@@ -23,7 +23,13 @@
 #' which are entries from the variable map, with an added .
 #' @export
 
-datacommons_find_variables <- function(missed, map = ".", sep = "[_:]", top = 3, metric = "cosine") {
+datacommons_find_variables <- function(
+  missed,
+  map = ".",
+  sep = "[_:]",
+  top = 3,
+  metric = "cosine"
+) {
   if (missing(missed)) cli_abort("{.arg missed} must be provided")
   nm <- length(missed)
   variable_map <- NULL
@@ -50,11 +56,17 @@ datacommons_find_variables <- function(missed, map = ".", sep = "[_:]", top = 3,
   }
   full_names <- unique(variable_map$full_name)
   if (nm == 1 && file.exists(missed)) {
-    missed <- jsonlite::read_json(if (dir.exists(missed)) paste0(missed, "/view.json") else missed)
+    missed <- jsonlite::read_json(
+      if (dir.exists(missed)) paste0(missed, "/view.json") else missed
+    )
     missed <- as.character(missed$variables)
-    if (!length(missed)) cli_abort("did not find any variables in the {.arg missed} view definition")
+    if (!length(missed))
+      cli_abort(
+        "did not find any variables in the {.arg missed} view definition"
+      )
     missed <- missed[!missed %in% full_names]
-    if (!length(missed)) cli_abort("all variables in the {.arg missed} view definition were found")
+    if (!length(missed))
+      cli_abort("all variables in the {.arg missed} view definition were found")
     nm <- length(missed)
   }
   mi <- seq_len(nm)
@@ -68,11 +80,18 @@ datacommons_find_variables <- function(missed, map = ".", sep = "[_:]", top = 3,
     if (v %in% full_names) {
       cbind(variable_map[variable_map$full_name == v, ], similarity = 1)
     } else {
-      do.call(rbind, lapply(order(sim[i, ], decreasing = TRUE)[top], function(o) {
-        vr <- variable_map[variable_map$full_name == full_names[[o]], , drop = FALSE]
-        vr$similarity <- sim[i, o]
-        vr
-      }))
+      do.call(
+        rbind,
+        lapply(order(sim[i, ], decreasing = TRUE)[top], function(o) {
+          vr <- variable_map[
+            variable_map$full_name == full_names[[o]],
+            ,
+            drop = FALSE
+          ]
+          vr$similarity <- sim[i, o]
+          vr
+        })
+      )
     }
   })
   names(res) <- missed

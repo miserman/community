@@ -14,10 +14,17 @@ test_that("reformats properly", {
 
 
 test_that("build environment is added to", {
-  content <- input_dataview(dataset = "dataset", ids = "ids", features = "features")
+  content <- input_dataview(
+    dataset = "dataset",
+    ids = "ids",
+    features = "features"
+  )
   parts <- make_build_environment()
-  eval(expression(
-    input_dataview(dataset = "dataset", ids = "ids", features = "features")
-  ), parts)
+  eval(
+    expression(
+      input_dataview(dataset = "dataset", ids = "ids", features = "features")
+    ),
+    parts
+  )
   expect_identical(parts$dataviews$view0, content)
 })
