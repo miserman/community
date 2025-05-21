@@ -327,7 +327,7 @@ data_add <- function(
           metadata[[su]]$versions <- rbind(
             metadata[[su]]$versions,
             if (is.data.frame(resource$versions)) resource$versions else
-              as.data.frame(do.call(rbind, resource$versions))
+              as.data.frame(do.call(cbind, resource$versions))
           )
           metadata[[su]]$versions <- metadata[[su]]$versions[
             !duplicated(metadata[[su]]$versions),
