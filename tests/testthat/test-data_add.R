@@ -15,6 +15,7 @@ test_that("adds to an existing package", {
     f
   })
   metadata$resources[[1]]$time <- Filter(length, list(a = NULL))
+  metadata$resources[[1]]$versions <- Filter(length, list(a = NULL))
   expect_equal(metadata$resources, read)
 })
 

@@ -208,6 +208,7 @@ data_add <- function(
         sub("\\.[^.]*$", "", basename(filename[[file]]))
       },
       filename = filename[[file]],
+      versions = get_versions(f),
       source = unpack_meta("source"),
       ids = ids,
       id_length = if (length(idvars)) {
@@ -317,10 +318,33 @@ data_add <- function(
   if (single_meta) {
     package$measure_info <- lapply(meta$variables, function(e) e[e != ""])
   }
-  package$resources <- c(metadata, if (!refresh) package$resources)
-  names <- vapply(package$resources, "[[", "", "filename")
-  if (anyDuplicated(names)) {
-    package$resources <- package$resources[!duplicated(names)]
+  names <- vapply(metadata, "[[", "", "filename")
+  for (resource in package$resources) {
+    if (length(resource$versions)) {
+      su <- which(names %in% resource$filename)
+      if (length(su)) {
+        if (length(metadata[[su]]$versions)) {
+          metadata[[su]]$versions <- rbind(
+            metadata[[su]]$versions,
+            if (is.data.frame(resource$versions)) resource$versions else
+              as.data.frame(do.call(rbind, resource$versions))
+          )
+          metadata[[su]]$versions <- metadata[[su]]$versions[
+            !duplicated(metadata[[su]]$versions),
+          ]
+        }
+      }
+    }
+  }
+  if (refresh) {
+    package$resources <- metadata
+  } else {
+    package$resources <- c(
+      metadata,
+      package$resources[
+        !(vapply(package$resources, "[[", "", "filename") %in% names)
+      ]
+    )
   }
   if (clean) {
     cf <- lma_dict("special", perl = TRUE, as.function = gsub)
@@ -344,6 +368,7 @@ data_add <- function(
       },
       auto_unbox = TRUE,
       digits = 6,
+      dataframe = "columns",
       pretty = pretty
     )
     if (verbose) {
@@ -358,4 +383,36 @@ data_add <- function(
     }
   }
   invisible(package)
+}
+
+get_versions <- function(file) {
+  log <- suppressWarnings(system2(
+    "git",
+    c("log", file),
+    stdout = TRUE
+  ))
+  if (is.null(attr(log, "status"))) {
+    log_entries <- strsplit(paste(log, collapse = "|"), "commit ")[[
+      1
+    ]]
+    log_entries <- do.call(
+      rbind,
+      Filter(
+        function(x) length(x) == 4L,
+        strsplit(
+          log_entries[log_entries != ""],
+          "\\|+(?:[^:]+:)?\\s*"
+        )
+      )
+    )
+    if (length(log_entries)) {
+      colnames(log_entries) <- c(
+        "hash",
+        "author",
+        "date",
+        "message"
+      )
+      as.data.frame(log_entries)
+    }
+  }
 }
